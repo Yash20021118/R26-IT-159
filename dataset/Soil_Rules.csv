@@ -1,0 +1,421 @@
+Soil Type,Factor,Condition Level,min_value,max_value,Message,Advice
+Calcic Red Yellow Latosols,Moisture (%),Critical Low,0.0,10.9,The soil is extremely dry.,Apply a large amount of water immediately.
+Calcic Red Yellow Latosols,Moisture (%),Low,10.9,21.28,Moisture levels are decreasing.,Start irrigation.
+Calcic Red Yellow Latosols,Moisture (%),Optimal,21.28,53.55,Moisture level is very good.,Maintain the current condition consistently.
+Calcic Red Yellow Latosols,Moisture (%),High,53.55,63.25,Moisture level is high.,Stop watering.
+Calcic Red Yellow Latosols,Moisture (%),Critical High,63.25,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Calcic Red Yellow Latosols,pH Level,Critical Low,0.0,7.78,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Calcic Red Yellow Latosols,pH Level,Low,7.78,7.88,Acidity is increasing.,Apply agricultural lime or dolomite.
+Calcic Red Yellow Latosols,pH Level,Optimal,7.88,8.11,pH level is at an optimal level.,Soil condition is good.
+Calcic Red Yellow Latosols,pH Level,High,8.11,8.21,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Calcic Red Yellow Latosols,pH Level,Critical High,8.21,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Calcic Red Yellow Latosols,Nitrogen (N),Critical Low,0.0,25.81,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Calcic Red Yellow Latosols,Nitrogen (N),Low,25.81,27.77,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Calcic Red Yellow Latosols,Nitrogen (N),Optimal,27.77,32.38,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Calcic Red Yellow Latosols,Nitrogen (N),High,32.38,34.13,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Calcic Red Yellow Latosols,Nitrogen (N),Critical High,34.13,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Calcic Red Yellow Latosols,Phosphorus (P),Critical Low,0.0,14.29,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Calcic Red Yellow Latosols,Phosphorus (P),Low,14.29,15.79,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Calcic Red Yellow Latosols,Phosphorus (P),Optimal,15.79,19.09,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Calcic Red Yellow Latosols,Phosphorus (P),High,19.09,20.56,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Calcic Red Yellow Latosols,Phosphorus (P),Critical High,20.56,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Calcic Red Yellow Latosols,Potassium (K),Critical Low,0.0,193.24,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Calcic Red Yellow Latosols,Potassium (K),Low,193.24,208.28,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Calcic Red Yellow Latosols,Potassium (K),Optimal,208.28,242.59,Potassium quantity is optimal.,Additional fertilizer is not required.
+Calcic Red Yellow Latosols,Potassium (K),High,242.59,257.24,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Calcic Red Yellow Latosols,Potassium (K),Critical High,257.24,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Calcic Red Yellow Latosols,Temperature (°C),Critical Low,0.0,29.65,Temperature is extremely low.,Apply plant covers.
+Calcic Red Yellow Latosols,Temperature (°C),Low,29.65,30.47,Temperature is lower than normal.,This is a normal condition.
+Calcic Red Yellow Latosols,Temperature (°C),Optimal,30.47,32.56,Temperature is at an optimal level.,Environmental condition is good.
+Calcic Red Yellow Latosols,Temperature (°C),High,32.56,33.36,Temperature is increasing.,Perform mulching.
+Calcic Red Yellow Latosols,Temperature (°C),Critical High,33.36,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Reddish Brown Latosolic,Moisture (%),Critical Low,0.0,11.43,The soil is extremely dry.,Apply a large amount of water immediately.
+Reddish Brown Latosolic,Moisture (%),Low,11.43,20.85,Moisture levels are decreasing.,Start irrigation.
+Reddish Brown Latosolic,Moisture (%),Optimal,20.85,53.41,Moisture level is very good.,Maintain the current condition consistently.
+Reddish Brown Latosolic,Moisture (%),High,53.41,63.36,Moisture level is high.,Stop watering.
+Reddish Brown Latosolic,Moisture (%),Critical High,63.36,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Reddish Brown Latosolic,pH Level,Critical Low,0.0,5.79,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Reddish Brown Latosolic,pH Level,Low,5.79,5.9,Acidity is increasing.,Apply agricultural lime or dolomite.
+Reddish Brown Latosolic,pH Level,Optimal,5.9,6.11,pH level is at an optimal level.,Soil condition is good.
+Reddish Brown Latosolic,pH Level,High,6.11,6.22,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Reddish Brown Latosolic,pH Level,Critical High,6.22,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Reddish Brown Latosolic,Nitrogen (N),Critical Low,0.0,38.64,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Reddish Brown Latosolic,Nitrogen (N),Low,38.64,41.81,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Reddish Brown Latosolic,Nitrogen (N),Optimal,41.81,48.4,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Latosolic,Nitrogen (N),High,48.4,51.53,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Latosolic,Nitrogen (N),Critical High,51.53,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Latosolic,Phosphorus (P),Critical Low,0.0,12.86,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Reddish Brown Latosolic,Phosphorus (P),Low,12.86,13.92,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Reddish Brown Latosolic,Phosphorus (P),Optimal,13.92,16.19,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Latosolic,Phosphorus (P),High,16.19,17.19,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Latosolic,Phosphorus (P),Critical High,17.19,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Latosolic,Potassium (K),Critical Low,0.0,123.09,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Reddish Brown Latosolic,Potassium (K),Low,123.09,131.09,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Reddish Brown Latosolic,Potassium (K),Optimal,131.09,149.36,Potassium quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Latosolic,Potassium (K),High,149.36,157.37,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Latosolic,Potassium (K),Critical High,157.37,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Latosolic,Temperature (°C),Critical Low,0.0,23.95,Temperature is extremely low.,Apply plant covers.
+Reddish Brown Latosolic,Temperature (°C),Low,23.95,24.86,Temperature is lower than normal.,This is a normal condition.
+Reddish Brown Latosolic,Temperature (°C),Optimal,24.86,27.05,Temperature is at an optimal level.,Environmental condition is good.
+Reddish Brown Latosolic,Temperature (°C),High,27.05,27.94,Temperature is increasing.,Perform mulching.
+Reddish Brown Latosolic,Temperature (°C),Critical High,27.94,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Bog and Half-Bog,Moisture (%),Critical Low,0.0,11.71,The soil is extremely dry.,Apply a large amount of water immediately.
+Bog and Half-Bog,Moisture (%),Low,11.71,20.34,Moisture levels are decreasing.,Start irrigation.
+Bog and Half-Bog,Moisture (%),Optimal,20.34,53.52,Moisture level is very good.,Maintain the current condition consistently.
+Bog and Half-Bog,Moisture (%),High,53.52,63.43,Moisture level is high.,Stop watering.
+Bog and Half-Bog,Moisture (%),Critical High,63.43,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Bog and Half-Bog,pH Level,Critical Low,0.0,4.29,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Bog and Half-Bog,pH Level,Low,4.29,4.38,Acidity is increasing.,Apply agricultural lime or dolomite.
+Bog and Half-Bog,pH Level,Optimal,4.38,4.61,pH level is at an optimal level.,Soil condition is good.
+Bog and Half-Bog,pH Level,High,4.61,4.71,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Bog and Half-Bog,pH Level,Critical High,4.71,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Bog and Half-Bog,Nitrogen (N),Critical Low,0.0,99.99,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Bog and Half-Bog,Nitrogen (N),Low,99.99,107.02,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Bog and Half-Bog,Nitrogen (N),Optimal,107.02,122.93,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Bog and Half-Bog,Nitrogen (N),High,122.93,130.12,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Bog and Half-Bog,Nitrogen (N),Critical High,130.12,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Bog and Half-Bog,Phosphorus (P),Critical Low,0.0,7.84,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Bog and Half-Bog,Phosphorus (P),Low,7.84,8.87,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Bog and Half-Bog,Phosphorus (P),Optimal,8.87,11.1,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Bog and Half-Bog,Phosphorus (P),High,11.1,12.1,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Bog and Half-Bog,Phosphorus (P),Critical High,12.1,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Bog and Half-Bog,Potassium (K),Critical Low,0.0,54.67,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Bog and Half-Bog,Potassium (K),Low,54.67,59.41,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Bog and Half-Bog,Potassium (K),Optimal,59.41,70.43,Potassium quantity is optimal.,Additional fertilizer is not required.
+Bog and Half-Bog,Potassium (K),High,70.43,75.71,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Bog and Half-Bog,Potassium (K),Critical High,75.71,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Bog and Half-Bog,Temperature (°C),Critical Low,0.0,25.25,Temperature is extremely low.,Apply plant covers.
+Bog and Half-Bog,Temperature (°C),Low,25.25,25.99,Temperature is lower than normal.,This is a normal condition.
+Bog and Half-Bog,Temperature (°C),Optimal,25.99,27.97,Temperature is at an optimal level.,Environmental condition is good.
+Bog and Half-Bog,Temperature (°C),High,27.97,28.74,Temperature is increasing.,Perform mulching.
+Bog and Half-Bog,Temperature (°C),Critical High,28.74,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Red Yellow Latosols,Moisture (%),Critical Low,0.0,10.82,The soil is extremely dry.,Apply a large amount of water immediately.
+Red Yellow Latosols,Moisture (%),Low,10.82,20.83,Moisture levels are decreasing.,Start irrigation.
+Red Yellow Latosols,Moisture (%),Optimal,20.83,54.55,Moisture level is very good.,Maintain the current condition consistently.
+Red Yellow Latosols,Moisture (%),High,54.55,63.53,Moisture level is high.,Stop watering.
+Red Yellow Latosols,Moisture (%),Critical High,63.53,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Red Yellow Latosols,pH Level,Critical Low,0.0,6.28,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Red Yellow Latosols,pH Level,Low,6.28,6.38,Acidity is increasing.,Apply agricultural lime or dolomite.
+Red Yellow Latosols,pH Level,Optimal,6.38,6.61,pH level is at an optimal level.,Soil condition is good.
+Red Yellow Latosols,pH Level,High,6.61,6.71,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Red Yellow Latosols,pH Level,Critical High,6.71,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Red Yellow Latosols,Nitrogen (N),Critical Low,0.0,15.71,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Red Yellow Latosols,Nitrogen (N),Low,15.71,17.66,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Red Yellow Latosols,Nitrogen (N),Optimal,17.66,22.22,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Latosols,Nitrogen (N),High,22.22,24.2,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Latosols,Nitrogen (N),Critical High,24.2,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Latosols,Phosphorus (P),Critical Low,0.0,7.78,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Red Yellow Latosols,Phosphorus (P),Low,7.78,8.89,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Red Yellow Latosols,Phosphorus (P),Optimal,8.89,11.11,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Latosols,Phosphorus (P),High,11.11,12.16,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Latosols,Phosphorus (P),Critical High,12.16,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Latosols,Potassium (K),Critical Low,0.0,64.36,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Red Yellow Latosols,Potassium (K),Low,64.36,69.3,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Red Yellow Latosols,Potassium (K),Optimal,69.3,80.51,Potassium quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Latosols,Potassium (K),High,80.51,85.67,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Latosols,Potassium (K),Critical High,85.67,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Latosols,Temperature (°C),Critical Low,0.0,30.69,Temperature is extremely low.,Apply plant covers.
+Red Yellow Latosols,Temperature (°C),Low,30.69,31.5,Temperature is lower than normal.,This is a normal condition.
+Red Yellow Latosols,Temperature (°C),Optimal,31.5,33.55,Temperature is at an optimal level.,Environmental condition is good.
+Red Yellow Latosols,Temperature (°C),High,33.55,34.34,Temperature is increasing.,Perform mulching.
+Red Yellow Latosols,Temperature (°C),Critical High,34.34,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Reddish Brown Earths,Moisture (%),Critical Low,0.0,11.53,The soil is extremely dry.,Apply a large amount of water immediately.
+Reddish Brown Earths,Moisture (%),Low,11.53,20.83,Moisture levels are decreasing.,Start irrigation.
+Reddish Brown Earths,Moisture (%),Optimal,20.83,53.3,Moisture level is very good.,Maintain the current condition consistently.
+Reddish Brown Earths,Moisture (%),High,53.3,63.18,Moisture level is high.,Stop watering.
+Reddish Brown Earths,Moisture (%),Critical High,63.18,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Reddish Brown Earths,pH Level,Critical Low,0.0,6.44,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Reddish Brown Earths,pH Level,Low,6.44,6.59,Acidity is increasing.,Apply agricultural lime or dolomite.
+Reddish Brown Earths,pH Level,Optimal,6.59,6.92,pH level is at an optimal level.,Soil condition is good.
+Reddish Brown Earths,pH Level,High,6.92,7.07,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Reddish Brown Earths,pH Level,Critical High,7.07,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Reddish Brown Earths,Nitrogen (N),Critical Low,0.0,48.51,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Reddish Brown Earths,Nitrogen (N),Low,48.51,51.52,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Reddish Brown Earths,Nitrogen (N),Optimal,51.52,58.38,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Earths,Nitrogen (N),High,58.38,61.47,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Earths,Nitrogen (N),Critical High,61.47,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Earths,Phosphorus (P),Critical Low,0.0,14.43,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Reddish Brown Earths,Phosphorus (P),Low,14.43,15.87,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Reddish Brown Earths,Phosphorus (P),Optimal,15.87,19.16,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Earths,Phosphorus (P),High,19.16,20.72,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Earths,Phosphorus (P),Critical High,20.72,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Earths,Potassium (K),Critical Low,0.0,143.5,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Reddish Brown Earths,Potassium (K),Low,143.5,150.82,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Reddish Brown Earths,Potassium (K),Optimal,150.82,168.91,Potassium quantity is optimal.,Additional fertilizer is not required.
+Reddish Brown Earths,Potassium (K),High,168.91,176.64,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Reddish Brown Earths,Potassium (K),Critical High,176.64,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Reddish Brown Earths,Temperature (°C),Critical Low,0.0,29.63,Temperature is extremely low.,Apply plant covers.
+Reddish Brown Earths,Temperature (°C),Low,29.63,30.43,Temperature is lower than normal.,This is a normal condition.
+Reddish Brown Earths,Temperature (°C),Optimal,30.43,32.51,Temperature is at an optimal level.,Environmental condition is good.
+Reddish Brown Earths,Temperature (°C),High,32.51,33.35,Temperature is increasing.,Perform mulching.
+Reddish Brown Earths,Temperature (°C),Critical High,33.35,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Solonchaks,Moisture (%),Critical Low,0.0,11.28,The soil is extremely dry.,Apply a large amount of water immediately.
+Solonchaks,Moisture (%),Low,11.28,20.56,Moisture levels are decreasing.,Start irrigation.
+Solonchaks,Moisture (%),Optimal,20.56,53.03,Moisture level is very good.,Maintain the current condition consistently.
+Solonchaks,Moisture (%),High,53.03,63.15,Moisture level is high.,Stop watering.
+Solonchaks,Moisture (%),Critical High,63.15,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Solonchaks,pH Level,Critical Low,0.0,8.44,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Solonchaks,pH Level,Low,8.44,8.58,Acidity is increasing.,Apply agricultural lime or dolomite.
+Solonchaks,pH Level,Optimal,8.58,8.93,pH level is at an optimal level.,Soil condition is good.
+Solonchaks,pH Level,High,8.93,9.08,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Solonchaks,pH Level,Critical High,9.08,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Solonchaks,Nitrogen (N),Critical Low,0.0,9.32,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Solonchaks,Nitrogen (N),Low,9.32,10.77,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Solonchaks,Nitrogen (N),Optimal,10.77,14.15,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Solonchaks,Nitrogen (N),High,14.15,15.62,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solonchaks,Nitrogen (N),Critical High,15.62,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solonchaks,Phosphorus (P),Critical Low,0.0,7.84,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Solonchaks,Phosphorus (P),Low,7.84,8.84,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Solonchaks,Phosphorus (P),Optimal,8.84,11.08,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Solonchaks,Phosphorus (P),High,11.08,12.09,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solonchaks,Phosphorus (P),Critical High,12.09,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solonchaks,Potassium (K),Critical Low,0.0,386.74,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Solonchaks,Potassium (K),Low,386.74,416.71,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Solonchaks,Potassium (K),Optimal,416.71,484.91,Potassium quantity is optimal.,Additional fertilizer is not required.
+Solonchaks,Potassium (K),High,484.91,516.61,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solonchaks,Potassium (K),Critical High,516.61,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solonchaks,Temperature (°C),Critical Low,0.0,30.68,Temperature is extremely low.,Apply plant covers.
+Solonchaks,Temperature (°C),Low,30.68,31.47,Temperature is lower than normal.,This is a normal condition.
+Solonchaks,Temperature (°C),Optimal,31.47,33.59,Temperature is at an optimal level.,Environmental condition is good.
+Solonchaks,Temperature (°C),High,33.59,34.33,Temperature is increasing.,Perform mulching.
+Solonchaks,Temperature (°C),Critical High,34.33,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Grumusols,Moisture (%),Critical Low,0.0,11.6,The soil is extremely dry.,Apply a large amount of water immediately.
+Grumusols,Moisture (%),Low,11.6,21.42,Moisture levels are decreasing.,Start irrigation.
+Grumusols,Moisture (%),Optimal,21.42,53.5,Moisture level is very good.,Maintain the current condition consistently.
+Grumusols,Moisture (%),High,53.5,63.57,Moisture level is high.,Stop watering.
+Grumusols,Moisture (%),Critical High,63.57,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Grumusols,pH Level,Critical Low,0.0,7.43,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Grumusols,pH Level,Low,7.43,7.58,Acidity is increasing.,Apply agricultural lime or dolomite.
+Grumusols,pH Level,Optimal,7.58,7.92,pH level is at an optimal level.,Soil condition is good.
+Grumusols,pH Level,High,7.92,8.08,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Grumusols,pH Level,Critical High,8.08,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Grumusols,Nitrogen (N),Critical Low,0.0,35.84,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Grumusols,Nitrogen (N),Low,35.84,37.88,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Grumusols,Nitrogen (N),Optimal,37.88,42.46,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Grumusols,Nitrogen (N),High,42.46,44.32,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Grumusols,Nitrogen (N),Critical High,44.32,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Grumusols,Phosphorus (P),Critical Low,0.0,19.3,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Grumusols,Phosphorus (P),Low,19.3,20.79,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Grumusols,Phosphorus (P),Optimal,20.79,24.17,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Grumusols,Phosphorus (P),High,24.17,25.75,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Grumusols,Phosphorus (P),Critical High,25.75,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Grumusols,Potassium (K),Critical Low,0.0,259.31,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Grumusols,Potassium (K),Low,259.31,279.43,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Grumusols,Potassium (K),Optimal,279.43,323.47,Potassium quantity is optimal.,Additional fertilizer is not required.
+Grumusols,Potassium (K),High,323.47,343.39,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Grumusols,Potassium (K),Critical High,343.39,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Grumusols,Temperature (°C),Critical Low,0.0,29.17,Temperature is extremely low.,Apply plant covers.
+Grumusols,Temperature (°C),Low,29.17,29.97,Temperature is lower than normal.,This is a normal condition.
+Grumusols,Temperature (°C),Optimal,29.97,32.02,Temperature is at an optimal level.,Environmental condition is good.
+Grumusols,Temperature (°C),High,32.02,32.75,Temperature is increasing.,Perform mulching.
+Grumusols,Temperature (°C),Critical High,32.75,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Non-Calcic Brown,Moisture (%),Critical Low,0.0,11.47,The soil is extremely dry.,Apply a large amount of water immediately.
+Non-Calcic Brown,Moisture (%),Low,11.47,22.45,Moisture levels are decreasing.,Start irrigation.
+Non-Calcic Brown,Moisture (%),Optimal,22.45,53.16,Moisture level is very good.,Maintain the current condition consistently.
+Non-Calcic Brown,Moisture (%),High,53.16,63.03,Moisture level is high.,Stop watering.
+Non-Calcic Brown,Moisture (%),Critical High,63.03,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Non-Calcic Brown,pH Level,Critical Low,0.0,5.77,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Non-Calcic Brown,pH Level,Low,5.77,5.88,Acidity is increasing.,Apply agricultural lime or dolomite.
+Non-Calcic Brown,pH Level,Optimal,5.88,6.11,pH level is at an optimal level.,Soil condition is good.
+Non-Calcic Brown,pH Level,High,6.11,6.21,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Non-Calcic Brown,pH Level,Critical High,6.21,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Non-Calcic Brown,Nitrogen (N),Critical Low,0.0,20.88,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Non-Calcic Brown,Nitrogen (N),Low,20.88,22.8,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Non-Calcic Brown,Nitrogen (N),Optimal,22.8,27.23,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Non-Calcic Brown,Nitrogen (N),High,27.23,29.27,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Non-Calcic Brown,Nitrogen (N),Critical High,29.27,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Non-Calcic Brown,Phosphorus (P),Critical Low,0.0,7.87,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Non-Calcic Brown,Phosphorus (P),Low,7.87,8.81,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Non-Calcic Brown,Phosphorus (P),Optimal,8.81,11.14,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Non-Calcic Brown,Phosphorus (P),High,11.14,12.14,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Non-Calcic Brown,Phosphorus (P),Critical High,12.14,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Non-Calcic Brown,Potassium (K),Critical Low,0.0,97.29,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Non-Calcic Brown,Potassium (K),Low,97.29,103.43,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Non-Calcic Brown,Potassium (K),Optimal,103.43,116.75,Potassium quantity is optimal.,Additional fertilizer is not required.
+Non-Calcic Brown,Potassium (K),High,116.75,123.23,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Non-Calcic Brown,Potassium (K),Critical High,123.23,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Non-Calcic Brown,Temperature (°C),Critical Low,0.0,28.68,Temperature is extremely low.,Apply plant covers.
+Non-Calcic Brown,Temperature (°C),Low,28.68,29.49,Temperature is lower than normal.,This is a normal condition.
+Non-Calcic Brown,Temperature (°C),Optimal,29.49,31.6,Temperature is at an optimal level.,Environmental condition is good.
+Non-Calcic Brown,Temperature (°C),High,31.6,32.4,Temperature is increasing.,Perform mulching.
+Non-Calcic Brown,Temperature (°C),Critical High,32.4,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Low Humic Gley,Moisture (%),Critical Low,0.0,11.56,The soil is extremely dry.,Apply a large amount of water immediately.
+Low Humic Gley,Moisture (%),Low,11.56,21.48,Moisture levels are decreasing.,Start irrigation.
+Low Humic Gley,Moisture (%),Optimal,21.48,54.49,Moisture level is very good.,Maintain the current condition consistently.
+Low Humic Gley,Moisture (%),High,54.49,63.85,Moisture level is high.,Stop watering.
+Low Humic Gley,Moisture (%),Critical High,63.85,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Low Humic Gley,pH Level,Critical Low,0.0,6.43,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Low Humic Gley,pH Level,Low,6.43,6.58,Acidity is increasing.,Apply agricultural lime or dolomite.
+Low Humic Gley,pH Level,Optimal,6.58,6.92,pH level is at an optimal level.,Soil condition is good.
+Low Humic Gley,pH Level,High,6.92,7.07,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Low Humic Gley,pH Level,Critical High,7.07,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Low Humic Gley,Nitrogen (N),Critical Low,0.0,38.7,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Low Humic Gley,Nitrogen (N),Low,38.7,41.58,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Low Humic Gley,Nitrogen (N),Optimal,41.58,48.33,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Low Humic Gley,Nitrogen (N),High,48.33,51.35,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Low Humic Gley,Nitrogen (N),Critical High,51.35,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Low Humic Gley,Phosphorus (P),Critical Low,0.0,12.85,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Low Humic Gley,Phosphorus (P),Low,12.85,13.87,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Low Humic Gley,Phosphorus (P),Optimal,13.87,16.14,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Low Humic Gley,Phosphorus (P),High,16.14,17.13,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Low Humic Gley,Phosphorus (P),Critical High,17.13,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Low Humic Gley,Potassium (K),Critical Low,0.0,114.35,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Low Humic Gley,Potassium (K),Low,114.35,119.23,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Low Humic Gley,Potassium (K),Optimal,119.23,130.81,Potassium quantity is optimal.,Additional fertilizer is not required.
+Low Humic Gley,Potassium (K),High,130.81,135.86,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Low Humic Gley,Potassium (K),Critical High,135.86,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Low Humic Gley,Temperature (°C),Critical Low,0.0,28.28,Temperature is extremely low.,Apply plant covers.
+Low Humic Gley,Temperature (°C),Low,28.28,28.97,Temperature is lower than normal.,This is a normal condition.
+Low Humic Gley,Temperature (°C),Optimal,28.97,31.01,Temperature is at an optimal level.,Environmental condition is good.
+Low Humic Gley,Temperature (°C),High,31.01,31.74,Temperature is increasing.,Perform mulching.
+Low Humic Gley,Temperature (°C),Critical High,31.74,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Regosols,Moisture (%),Critical Low,0.0,11.58,The soil is extremely dry.,Apply a large amount of water immediately.
+Regosols,Moisture (%),Low,11.58,21.63,Moisture levels are decreasing.,Start irrigation.
+Regosols,Moisture (%),Optimal,21.63,53.55,Moisture level is very good.,Maintain the current condition consistently.
+Regosols,Moisture (%),High,53.55,63.39,Moisture level is high.,Stop watering.
+Regosols,Moisture (%),Critical High,63.39,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Regosols,pH Level,Critical Low,0.0,6.92,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Regosols,pH Level,Low,6.92,7.08,Acidity is increasing.,Apply agricultural lime or dolomite.
+Regosols,pH Level,Optimal,7.08,7.41,pH level is at an optimal level.,Soil condition is good.
+Regosols,pH Level,High,7.41,7.57,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Regosols,pH Level,Critical High,7.57,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Regosols,Nitrogen (N),Critical Low,0.0,9.18,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Regosols,Nitrogen (N),Low,9.18,10.68,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Regosols,Nitrogen (N),Optimal,10.68,14.22,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Regosols,Nitrogen (N),High,14.22,15.71,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Regosols,Nitrogen (N),Critical High,15.71,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Regosols,Phosphorus (P),Critical Low,0.0,4.35,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Regosols,Phosphorus (P),Low,4.35,5.1,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Regosols,Phosphorus (P),Optimal,5.1,6.85,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Regosols,Phosphorus (P),High,6.85,7.68,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Regosols,Phosphorus (P),Critical High,7.68,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Regosols,Potassium (K),Critical Low,0.0,41.51,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Regosols,Potassium (K),Low,41.51,45.59,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Regosols,Potassium (K),Optimal,45.59,54.54,Potassium quantity is optimal.,Additional fertilizer is not required.
+Regosols,Potassium (K),High,54.54,58.66,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Regosols,Potassium (K),Critical High,58.66,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Regosols,Temperature (°C),Critical Low,0.0,29.95,Temperature is extremely low.,Apply plant covers.
+Regosols,Temperature (°C),Low,29.95,30.89,Temperature is lower than normal.,This is a normal condition.
+Regosols,Temperature (°C),Optimal,30.89,33.11,Temperature is at an optimal level.,Environmental condition is good.
+Regosols,Temperature (°C),High,33.11,33.97,Temperature is increasing.,Perform mulching.
+Regosols,Temperature (°C),Critical High,33.97,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Red Yellow Podzolic,Moisture (%),Critical Low,0.0,11.88,The soil is extremely dry.,Apply a large amount of water immediately.
+Red Yellow Podzolic,Moisture (%),Low,11.88,21.46,Moisture levels are decreasing.,Start irrigation.
+Red Yellow Podzolic,Moisture (%),Optimal,21.46,53.8,Moisture level is very good.,Maintain the current condition consistently.
+Red Yellow Podzolic,Moisture (%),High,53.8,63.49,Moisture level is high.,Stop watering.
+Red Yellow Podzolic,Moisture (%),Critical High,63.49,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Red Yellow Podzolic,pH Level,Critical Low,0.0,4.79,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Red Yellow Podzolic,pH Level,Low,4.79,4.88,Acidity is increasing.,Apply agricultural lime or dolomite.
+Red Yellow Podzolic,pH Level,Optimal,4.88,5.11,pH level is at an optimal level.,Soil condition is good.
+Red Yellow Podzolic,pH Level,High,5.11,5.21,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Red Yellow Podzolic,pH Level,Critical High,5.21,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Red Yellow Podzolic,Nitrogen (N),Critical Low,0.0,28.54,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Red Yellow Podzolic,Nitrogen (N),Low,28.54,31.63,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Red Yellow Podzolic,Nitrogen (N),Optimal,31.63,38.45,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Podzolic,Nitrogen (N),High,38.45,41.36,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Podzolic,Nitrogen (N),Critical High,41.36,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Podzolic,Phosphorus (P),Critical Low,0.0,7.87,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Red Yellow Podzolic,Phosphorus (P),Low,7.87,8.87,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Red Yellow Podzolic,Phosphorus (P),Optimal,8.87,11.09,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Podzolic,Phosphorus (P),High,11.09,12.16,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Podzolic,Phosphorus (P),Critical High,12.16,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Podzolic,Potassium (K),Critical Low,0.0,77.07,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Red Yellow Podzolic,Potassium (K),Low,77.07,83.22,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Red Yellow Podzolic,Potassium (K),Optimal,83.22,96.3,Potassium quantity is optimal.,Additional fertilizer is not required.
+Red Yellow Podzolic,Potassium (K),High,96.3,102.11,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Red Yellow Podzolic,Potassium (K),Critical High,102.11,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Red Yellow Podzolic,Temperature (°C),Critical Low,0.0,20.71,Temperature is extremely low.,Apply plant covers.
+Red Yellow Podzolic,Temperature (°C),Low,20.71,21.79,Temperature is lower than normal.,This is a normal condition.
+Red Yellow Podzolic,Temperature (°C),Optimal,21.79,24.23,Temperature is at an optimal level.,Environmental condition is good.
+Red Yellow Podzolic,Temperature (°C),High,24.23,25.38,Temperature is increasing.,Perform mulching.
+Red Yellow Podzolic,Temperature (°C),Critical High,25.38,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Solodized Solonetz,Moisture (%),Critical Low,0.0,11.43,The soil is extremely dry.,Apply a large amount of water immediately.
+Solodized Solonetz,Moisture (%),Low,11.43,21.12,Moisture levels are decreasing.,Start irrigation.
+Solodized Solonetz,Moisture (%),Optimal,21.12,53.17,Moisture level is very good.,Maintain the current condition consistently.
+Solodized Solonetz,Moisture (%),High,53.17,64.15,Moisture level is high.,Stop watering.
+Solodized Solonetz,Moisture (%),Critical High,64.15,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Solodized Solonetz,pH Level,Critical Low,0.0,7.92,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Solodized Solonetz,pH Level,Low,7.92,8.07,Acidity is increasing.,Apply agricultural lime or dolomite.
+Solodized Solonetz,pH Level,Optimal,8.07,8.41,pH level is at an optimal level.,Soil condition is good.
+Solodized Solonetz,pH Level,High,8.41,8.55,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Solodized Solonetz,pH Level,Critical High,8.55,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Solodized Solonetz,Nitrogen (N),Critical Low,0.0,15.9,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Solodized Solonetz,Nitrogen (N),Low,15.9,17.93,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Solodized Solonetz,Nitrogen (N),Optimal,17.93,22.19,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Solodized Solonetz,Nitrogen (N),High,22.19,24.21,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solodized Solonetz,Nitrogen (N),Critical High,24.21,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solodized Solonetz,Phosphorus (P),Critical Low,0.0,12.94,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Solodized Solonetz,Phosphorus (P),Low,12.94,13.94,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Solodized Solonetz,Phosphorus (P),Optimal,13.94,16.14,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Solodized Solonetz,Phosphorus (P),High,16.14,17.08,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solodized Solonetz,Phosphorus (P),Critical High,17.08,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solodized Solonetz,Potassium (K),Critical Low,0.0,284.16,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Solodized Solonetz,Potassium (K),Low,284.16,314.11,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Solodized Solonetz,Potassium (K),Optimal,314.11,384.54,Potassium quantity is optimal.,Additional fertilizer is not required.
+Solodized Solonetz,Potassium (K),High,384.54,415.41,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Solodized Solonetz,Potassium (K),Critical High,415.41,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Solodized Solonetz,Temperature (°C),Critical Low,0.0,30.62,Temperature is extremely low.,Apply plant covers.
+Solodized Solonetz,Temperature (°C),Low,30.62,31.4,Temperature is lower than normal.,This is a normal condition.
+Solodized Solonetz,Temperature (°C),Optimal,31.4,33.59,Temperature is at an optimal level.,Environmental condition is good.
+Solodized Solonetz,Temperature (°C),High,33.59,34.38,Temperature is increasing.,Perform mulching.
+Solodized Solonetz,Temperature (°C),Critical High,34.38,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Alluvial Soils,Moisture (%),Critical Low,0.0,12.26,The soil is extremely dry.,Apply a large amount of water immediately.
+Alluvial Soils,Moisture (%),Low,12.26,21.57,Moisture levels are decreasing.,Start irrigation.
+Alluvial Soils,Moisture (%),Optimal,21.57,53.58,Moisture level is very good.,Maintain the current condition consistently.
+Alluvial Soils,Moisture (%),High,53.58,62.96,Moisture level is high.,Stop watering.
+Alluvial Soils,Moisture (%),Critical High,62.96,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Alluvial Soils,pH Level,Critical Low,0.0,5.93,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Alluvial Soils,pH Level,Low,5.93,6.08,Acidity is increasing.,Apply agricultural lime or dolomite.
+Alluvial Soils,pH Level,Optimal,6.08,6.41,pH level is at an optimal level.,Soil condition is good.
+Alluvial Soils,pH Level,High,6.41,6.55,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Alluvial Soils,pH Level,Critical High,6.55,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Alluvial Soils,Nitrogen (N),Critical Low,0.0,71.62,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Alluvial Soils,Nitrogen (N),Low,71.62,75.62,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Alluvial Soils,Nitrogen (N),Optimal,75.62,84.3,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Alluvial Soils,Nitrogen (N),High,84.3,88.39,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Alluvial Soils,Nitrogen (N),Critical High,88.39,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Alluvial Soils,Phosphorus (P),Critical Low,0.0,25.54,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Alluvial Soils,Phosphorus (P),Low,25.54,27.59,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Alluvial Soils,Phosphorus (P),Optimal,27.59,32.14,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Alluvial Soils,Phosphorus (P),High,32.14,34.16,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Alluvial Soils,Phosphorus (P),Critical High,34.16,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Alluvial Soils,Potassium (K),Critical Low,0.0,177.99,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Alluvial Soils,Potassium (K),Low,177.99,188.42,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Alluvial Soils,Potassium (K),Optimal,188.42,210.81,Potassium quantity is optimal.,Additional fertilizer is not required.
+Alluvial Soils,Potassium (K),High,210.81,221.75,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Alluvial Soils,Potassium (K),Critical High,221.75,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Alluvial Soils,Temperature (°C),Critical Low,0.0,26.6,Temperature is extremely low.,Apply plant covers.
+Alluvial Soils,Temperature (°C),Low,26.6,27.39,Temperature is lower than normal.,This is a normal condition.
+Alluvial Soils,Temperature (°C),Optimal,27.39,29.52,Temperature is at an optimal level.,Environmental condition is good.
+Alluvial Soils,Temperature (°C),High,29.52,30.39,Temperature is increasing.,Perform mulching.
+Alluvial Soils,Temperature (°C),Critical High,30.39,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.
+Immature Brown Loams,Moisture (%),Critical Low,0.0,11.66,The soil is extremely dry.,Apply a large amount of water immediately.
+Immature Brown Loams,Moisture (%),Low,11.66,21.92,Moisture levels are decreasing.,Start irrigation.
+Immature Brown Loams,Moisture (%),Optimal,21.92,53.61,Moisture level is very good.,Maintain the current condition consistently.
+Immature Brown Loams,Moisture (%),High,53.61,63.52,Moisture level is high.,Stop watering.
+Immature Brown Loams,Moisture (%),Critical High,63.52,99999.0,The soil is saturated with water.,Improve drainage immediately.
+Immature Brown Loams,pH Level,Critical Low,0.0,5.29,The soil is extremely acidic.,Apply a high dose of dolomite immediately.
+Immature Brown Loams,pH Level,Low,5.29,5.39,Acidity is increasing.,Apply agricultural lime or dolomite.
+Immature Brown Loams,pH Level,Optimal,5.39,5.62,pH level is at an optimal level.,Soil condition is good.
+Immature Brown Loams,pH Level,High,5.62,5.72,Alkalinity is increasing.,Apply organic fertilizer or compost.
+Immature Brown Loams,pH Level,Critical High,5.72,99999.0,The soil is extremely alkaline.,Apply sulfur-containing materials.
+Immature Brown Loams,Nitrogen (N),Critical Low,0.0,33.51,Nitrogen deficiency is very severe.,Apply a high dose of fertilizer rich in Nitrogen immediately.
+Immature Brown Loams,Nitrogen (N),Low,33.51,36.82,Nitrogen quantity is decreasing.,Apply fertilizer containing Nitrogen.
+Immature Brown Loams,Nitrogen (N),Optimal,36.82,43.46,Nitrogen quantity is optimal.,Additional fertilizer is not required.
+Immature Brown Loams,Nitrogen (N),High,43.46,46.59,Nitrogen quantity is at a high level.,Temporarily stop applying this fertilizer.
+Immature Brown Loams,Nitrogen (N),Critical High,46.59,99999.0,Nitrogen quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Immature Brown Loams,Phosphorus (P),Critical Low,0.0,12.83,Phosphorus deficiency is very severe.,Apply a high dose of fertilizer rich in Phosphorus immediately.
+Immature Brown Loams,Phosphorus (P),Low,12.83,13.85,Phosphorus quantity is decreasing.,Apply fertilizer containing Phosphorus.
+Immature Brown Loams,Phosphorus (P),Optimal,13.85,16.1,Phosphorus quantity is optimal.,Additional fertilizer is not required.
+Immature Brown Loams,Phosphorus (P),High,16.1,17.16,Phosphorus quantity is at a high level.,Temporarily stop applying this fertilizer.
+Immature Brown Loams,Phosphorus (P),Critical High,17.16,99999.0,Phosphorus quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Immature Brown Loams,Potassium (K),Critical Low,0.0,109.54,Potassium deficiency is very severe.,Apply a high dose of fertilizer rich in Potassium immediately.
+Immature Brown Loams,Potassium (K),Low,109.54,117.23,Potassium quantity is decreasing.,Apply fertilizer containing Potassium.
+Immature Brown Loams,Potassium (K),Optimal,117.23,132.48,Potassium quantity is optimal.,Additional fertilizer is not required.
+Immature Brown Loams,Potassium (K),High,132.48,139.75,Potassium quantity is at a high level.,Temporarily stop applying this fertilizer.
+Immature Brown Loams,Potassium (K),Critical High,139.75,99999.0,Potassium quantity is at a toxic level.,Stop applying fertilizer and leach with water.
+Immature Brown Loams,Temperature (°C),Critical Low,0.0,22.33,Temperature is extremely low.,Apply plant covers.
+Immature Brown Loams,Temperature (°C),Low,22.33,23.34,Temperature is lower than normal.,This is a normal condition.
+Immature Brown Loams,Temperature (°C),Optimal,23.34,25.73,Temperature is at an optimal level.,Environmental condition is good.
+Immature Brown Loams,Temperature (°C),High,25.73,26.58,Temperature is increasing.,Perform mulching.
+Immature Brown Loams,Temperature (°C),Critical High,26.58,99999.0,Temperature is extremely high.,Provide extra shade. Perform irrigation.

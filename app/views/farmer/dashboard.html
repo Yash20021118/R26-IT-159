@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SmartSeed Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --green:#1a7a4a; --green-light:#22c55e;
+    --blue-mid:#3b82f6; --purple:#5b21b6; --purple-mid:#7c3aed;
+    --amber:#b45309; --amber-mid:#f59e0b; --red:#b91c1c; --red-pale:#fee2e2;
+    --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0;
+    --gray-400:#94a3b8; --gray-600:#475569; --gray-700:#334155; --gray-800:#1e293b; --white:#ffffff;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --radius-sm:6px; --radius:10px; --radius-lg:14px;
+    --font-main:'DM Sans',sans-serif;
+  }
+  
+  body {
+      font-family:var(--font-main);
+      background:var(--gray-100);
+      color:var(--gray-800);
+      font-size:14px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+  }
+
+  /* Custom Scrollbar for Inner Content */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  /* Header Styling */
+  .header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); flex-shrink: 0; z-index: 10; }
+  .header h2 { margin: 0; color: #16a34a; font-size: 20px; display: flex; align-items: center; gap: 8px;}
+  .user-info { display: flex; align-items: center; gap: 20px; }
+  .user-info span { font-weight: 600; color: #475569; }
+  .logout { color: #ef4444; text-decoration: none; font-weight: bold; border: 1.5px solid #fca5a5; padding: 6px 15px; border-radius: 6px; transition: 0.3s;}
+  .logout:hover { background: #fee2e2; }
+
+  /* Weather Pill CSS */
+  .weather-pill { display:flex; align-items:center; gap:7px; background:#fef3c7; border:1px solid #fed7aa; border-radius:var(--radius-sm); padding:6px 12px; font-weight:600; color:var(--amber); font-size: 14px;}
+
+  /* Center wrapper */
+  .center-wrapper { display: flex; justify-content: center; align-items: flex-start; padding: 30px 25px; flex-grow: 1; }
+
+  /* Main card */
+  .card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); width: 100%; max-width: 700px; }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 12px; }
+  .card-header h3 { margin: 0; font-size: 17px; color: #0f172a; }
+  
+  /* Dropdown */
+  select { width: 100%; padding: 10px 15px; border-radius: 8px; border: 1.5px solid #cbd5e1; margin-bottom: 20px; font-family: 'DM Sans'; font-weight: 600; font-size: 14px; color: #334155; outline: none; background: #f8fafc; cursor: pointer; }
+  
+  /* Sensor Grid */
+  .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+  .sensor-box { background: #f8fafc; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0; }
+  .sensor-title { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .sensor-val { font-size: 24px; font-weight: 700; }
+  
+  .box-moisture { border-top: 4px solid #3b82f6; }
+  .val-moisture { color: #2563eb; }
+  .box-temp { border-top: 4px solid #f59e0b; }
+  .val-temp { color: #d97706; }
+  .box-ph { border-top: 4px solid #10b981; }
+  .val-ph { color: #059669; }
+  .box-npk { border-top: 4px solid #475569; }
+  .val-npk { color: #334155; }
+
+  /* AI Box */
+  .soil-ai-box { background: #f3e8ff; padding: 18px; border-radius: 10px; text-align: center; border: 1.5px solid #e9d5ff; margin-top: 5px; }
+  .soil-ai-title { font-weight: 700; color: #7e22ce; font-size: 12px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .soil-type { font-size: 24px; font-weight: 700; color: #6d28d9; margin-bottom: 6px;}
+  .soil-conf { color: #8b5cf6; font-size: 13px; font-weight: 500;}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h2>SmartSeed</h2>
+    <div class="user-info">
+        <div class="weather-pill" id="weatherWidget">--°C | Loading...</div>
+        <span>{{ user_name }}</span>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+</div>
+
+<div class="center-wrapper">
+    <div class="card">
+        <div class="card-header">
+            <h3>Sensor Data &amp; AI Classification</h3>
+        </div>
+        
+        <select id="farmSelect" onchange="fetchData()">
+            {% for farm in farms %}
+                <option value="{{ farm._id }}">{{ farm.farm_name }} ({{ farm.location.district }})</option>
+            {% endfor %}
+        </select>
+
+        <div class="sensor-grid">
+            <div class="sensor-box box-moisture">
+                <div class="sensor-title">SOIL MOISTURE</div>
+                <div class="sensor-val val-moisture" id="sm">--</div>
+            </div>
+            <div class="sensor-box box-temp">
+                <div class="sensor-title">TEMPERATURE</div>
+                <div class="sensor-val val-temp" id="temp">--</div>
+            </div>
+            <div class="sensor-box box-ph">
+                <div class="sensor-title">pH LEVEL</div>
+                <div class="sensor-val val-ph" id="ph">--</div>
+            </div>
+            <div class="sensor-box box-npk">
+                <div class="sensor-title">NPK VALUES</div>
+                <div class="sensor-val val-npk" id="npk" style="font-size: 18px; margin-top:5px;">-- / -- / --</div>
+            </div>
+        </div>
+
+        <div class="soil-ai-box">
+            <div class="soil-ai-title">AI SOIL CLASSIFICATION MODEL</div>
+            <div class="soil-type" id="soil_type">Analyzing...</div>
+            
+            <div style="font-size: 13px; color: #475569; margin-bottom: 6px; font-weight: bold;">
+                Agro-Ecological Zone: <span id="agro_zone_display" style="color: #059669;">--</span>
+            </div>
+            
+            <div class="soil-conf" id="soil_conf">--% Confidence</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function fetchData() {
+        const farmSelect = document.getElementById('farmSelect');
+        if(!farmSelect || !farmSelect.value) return;
+        
+        fetch(`/api/farm_data/${farmSelect.value}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                
+                let wDesc = data.sensor_data.weather_desc ? data.sensor_data.weather_desc.toLowerCase() : "unknown";
+                let displayDesc = data.sensor_data.weather_desc.replace(/\b\w/g, l => l.toUpperCase());
+                document.getElementById('weatherWidget').innerHTML = `${data.sensor_data.weather_temperature}°C | ${displayDesc}`;
+
+                let sd = data.sensor_data;
+                document.getElementById('sm').innerText = sd.soil_moisture !== '--' ? sd.soil_moisture + '%' : '--';
+                document.getElementById('temp').innerText = sd.temperature !== '--' ? sd.temperature + '°C' : '--';
+                document.getElementById('ph').innerText = sd.ph_level;
+                
+                if (sd.nitrogen !== '--') {
+                    document.getElementById('npk').innerText = `${sd.nitrogen} / ${sd.phosphorus} / ${sd.potassium}`;
+                } else {
+                    document.getElementById('npk').innerText = '-- / -- / --';
+                }
+                
+                if(data.soil_prediction) {
+                    document.getElementById('soil_type').innerText = data.soil_prediction.soil_type;
+                    document.getElementById('soil_conf').innerText = data.soil_prediction.confidence !== '--' ? data.soil_prediction.confidence + '% Confidence' : '--';
+                    document.getElementById('agro_zone_display').innerText = data.agro_zone ? data.agro_zone : '--';
+                }
+            }
+        }).catch(err => console.error("Error fetching data:", err));
+    }
+
+    fetchData();
+    
+    // Sensor data updated every 30 seconds
+    setInterval(() => {
+        fetchData();
+    }, 30000); 
+</script>
+</body>
+</html>

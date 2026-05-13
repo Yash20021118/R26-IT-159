@@ -1,0 +1,49 @@
+Climate_Zone,District,Zone_Code,Latitude,Longitude,Elevation_m
+Wet Zone,Kalutara,WL1a,6.83,80.05,15
+Wet Zone,Colombo,WL1a,6.83,80.05,15
+Wet Zone,Ratnapura,WL1b,6.55,80.25,35
+Wet Zone,Galle,WL2a,6.1,80.2,12
+Wet Zone,Matara,WL2b,6.25,80.55,10
+Wet Zone,Gampaha,WL3,7.08,79.98,20
+Wet Zone,Kegalle,WM1a,7.15,80.45,240
+Wet Zone,Kegalle,WM1b,6.95,80.5,190
+Wet Zone,Kandy,WM2a,7.25,80.55,480
+Wet Zone,Kandy,WM2b,7.3,80.65,520
+Wet Zone,Kandy,WM3a,7.1,80.7,560
+Wet Zone,Kandy,WM3b,7.35,80.75,610
+Wet Zone,Nuwara Eliya,WU1,6.95,80.78,1880
+Wet Zone,Nuwara Eliya,WU2a,6.85,80.7,1150
+Wet Zone,Badulla,WU2b,6.8,80.85,1420
+Wet Zone,Badulla,WU3,6.9,80.95,1100
+Intermediate Zone,Kurunegala,IL1a,7.48,80.36,110
+Intermediate Zone,Kurunegala,IL1b,7.65,80.2,95
+Intermediate Zone,Monaragala,IL1c,6.88,81.35,210
+Intermediate Zone,Ratnapura,IL2,6.4,80.95,105
+Intermediate Zone,Puttalam Border,IL3,7.25,79.85,15
+Intermediate Zone,Matale,IM1a,7.45,80.6,360
+Intermediate Zone,Matale,IM1b,7.55,80.7,410
+Intermediate Zone,Matale,IM1c,7.65,80.85,195
+Intermediate Zone,Badulla,IM2a,7.15,81.1,160
+Intermediate Zone,Monaragala,IM2b,7.05,81.25,245
+Intermediate Zone,Matale,IM3a,7.8,80.65,215
+Intermediate Zone,Matale,IM3b,7.75,80.75,185
+Intermediate Zone,Kandy,IM3c,7.4,80.9,840
+Intermediate Zone,Badulla,IU1,6.95,81,1250
+Intermediate Zone,Badulla,IU2,6.98,81.05,680
+Intermediate Zone,Badulla,IU3a,7.05,81.1,1020
+Intermediate Zone,Badulla,IU3b,6.85,81.15,1050
+Intermediate Zone,Monaragala,IU3c,6.75,81.2,460
+Intermediate Zone,Badulla,IU3d,7.1,81,710
+Intermediate Zone,Badulla,IU3e,6.9,81.05,740
+Dry Zone,Trincomalee,DL1a,8.58,81.21,8
+Dry Zone,Anuradhapura,DL1b,8.35,80.4,92
+Dry Zone,Anuradhapura,DL1c,8.1,80.25,85
+Dry Zone,Anuradhapura,DL1d,8.6,80.5,105
+Dry Zone,Vavuniya,DL1e,8.85,80.3,112
+Dry Zone,Polonnaruwa,DL2a,7.95,81.5,65
+Dry Zone,Batticaloa,DL2b,7.72,81.7,5
+Dry Zone,Jaffna,DL3,9.66,80.01,6
+Dry Zone,Mannar,DL4,9.05,79.9,5
+Dry Zone,Hambantota,DL5,6.12,81.12,10
+Dry Zone,Monaragala,DL6,6.35,81.5,62
+Dry Zone,Hambantota,DL6,6.35,81.5,62

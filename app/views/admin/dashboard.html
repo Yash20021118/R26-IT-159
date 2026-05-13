@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - SmartSeed</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background-color: #f8fafc; margin: 0; padding: 20px; color: #1e293b;}
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #22c55e; padding-bottom: 15px; margin-bottom: 20px; }
+        h2 { color: #1e293b; margin: 0; font-weight: 700;}
+        .logout-btn { background: #fee2e2; color: #b91c1c; padding: 8px 15px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px;}
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #475569; font-weight: 600; font-size: 14px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: 'DM Sans'; box-sizing: border-box; }
+        
+        button { background-color: #16a34a; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: 700; width: 100%; margin-top: 10px; transition: 0.3s;}
+        button:hover { background-color: #15803d; }
+        
+        .success-msg { display: none; color: #15803d; background: #dcfce7; padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-weight: 600; border: 1px solid #bbf7d0;}
+        .error-msg { display: none; color: #b91c1c; background: #fee2e2; padding: 12px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-weight: 600; border: 1px solid #fecaca;}
+        
+        .tabs { display: flex; margin-bottom: 25px; border-bottom: 2px solid #e2e8f0; }
+        .tab { padding: 10px 20px; cursor: pointer; color: #64748b; font-weight: 600; transition: 0.3s;}
+        .tab.active { color: #16a34a; border-bottom: 3px solid #16a34a; margin-bottom: -2px;}
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        
+        .info-note { background: #eff6ff; color: #1e3a8a; padding: 10px; border-radius: 6px; font-size: 13px; margin-bottom: 15px; border: 1px solid #bfdbfe; font-weight: 500;}
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>SmartSeed Admin Portal</h2>
+            <a href="/admin/logout" class="logout-btn">Logout</a>
+        </div>
+        
+        <div id="successMsg" class="success-msg"></div>
+        <div id="errorMsg" class="error-msg"></div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('newFarmerTab', this)">1. Register New Farmer</div>
+            <div class="tab" onclick="switchTab('existingFarmerTab', this)">2. Add Farm to Existing Farmer</div>
+        </div>
+
+        <!-- TAB 1: Register New Farmer -->
+        <div id="newFarmerTab" class="tab-content active">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Farmer Name</label>
+                    <input type="text" id="farmer_name" required>
+                </div>
+                <div class="form-group">
+                    <label>Farmer Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Password for Farmer</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 25px 0;">
+                <h4 style="color: #334155; margin-top: 0;">Farm Details</h4>
+                
+                <div class="info-note">
+                    ℹ️ District,Agro-Ecological Zone and altitude will be automatically detected based on the Latitude and Longitude provided.
+                </div>
+
+                <div class="form-group">
+                    <label>Farm Name</label>
+                    <input type="text" id="farm_name" placeholder="e.g. Perera's Tomato Field" required>
+                </div>
+                <div class="form-group">
+                    <label>Hardware Device ID (Sensor Module ID)</label>
+                    <input type="text" id="device_id" placeholder="e.g. S_001" required>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Latitude</label>
+                        <input type="number" step="any" id="lat" placeholder="e.g. 7.2906" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Longitude</label>
+                        <input type="number" step="any" id="lng" placeholder="e.g. 80.6337" required>
+                    </div>
+                </div>
+                
+                <button type="submit">Register Farmer & Farm</button>
+            </form>
+        </div>
+
+        <!-- TAB 2: Add Farm to Existing Farmer -->
+        <div id="existingFarmerTab" class="tab-content">
+            <form id="addFarmForm">
+                <div class="form-group">
+                    <label>Select Farmer</label>
+                    <select id="existing_farmer_id" required>
+                        <option value="">-- Select Farmer --</option>
+                        {% for farmer in farmers %}
+                            <option value="{{ farmer._id }}">{{ farmer.name }} ({{ farmer.email }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="info-note">
+                    ℹ️ District,Agro-Ecological Zone and altitude will be automatically detected based on the Latitude and Longitude provided.
+                </div>
+
+                <div class="form-group">
+                    <label>Farm Name</label>
+                    <input type="text" id="ex_farm_name" placeholder="e.g. Nimal's Orchid Farm 2" required>
+                </div>
+                <div class="form-group">
+                    <label>Hardware Device ID (Sensor Module ID)</label>
+                    <input type="text" id="ex_device_id" placeholder="e.g. S_002" required>
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Latitude</label>
+                        <input type="number" step="any" id="ex_lat" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Longitude</label>
+                        <input type="number" step="any" id="ex_lng" required>
+                    </div>
+                </div>
+                
+                <button type="submit">Add New Farm</button>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+            hideMessages();
+        }
+
+        function showMessage(type, msg) {
+            hideMessages();
+            const box = document.getElementById(type === 'success' ? 'successMsg' : 'errorMsg');
+            box.textContent = msg;
+            box.style.display = 'block';
+            if (type !== 'success') {
+                setTimeout(() => box.style.display = 'none', 4000);
+            }
+        }
+
+        function hideMessages() {
+            document.getElementById('successMsg').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        // 1. Register New Farmer
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                farmer_name: document.getElementById('farmer_name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                farm_name: document.getElementById('farm_name').value,
+                device_id: document.getElementById('device_id').value,
+                lat: parseFloat(document.getElementById('lat').value),
+                lng: parseFloat(document.getElementById('lng').value)
+            };
+
+            try {
+                const response = await fetch('/admin/register_farmer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    showMessage('success', result.message);
+                    document.getElementById('registerForm').reset();
+                    setTimeout(() => location.reload(), 3000); 
+                } else {
+                    showMessage('error', 'Error: ' + result.error);
+                }
+            } catch (error) {
+                showMessage('error', 'Network Error occurred');
+            }
+        });
+
+        // 2. Add Farm to Existing Farmer
+        document.getElementById('addFarmForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                user_id: document.getElementById('existing_farmer_id').value,
+                farm_name: document.getElementById('ex_farm_name').value,
+                device_id: document.getElementById('ex_device_id').value,
+                lat: parseFloat(document.getElementById('ex_lat').value),
+                lng: parseFloat(document.getElementById('ex_lng').value)
+            };
+
+            try {
+                const response = await fetch('/admin/add_farm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    showMessage('success', result.message);
+                    document.getElementById('addFarmForm').reset();
+                } else {
+                    showMessage('error', 'Error: ' + result.error);
+                }
+            } catch (error) {
+                showMessage('error', 'Network Error occurred');
+            }
+        });
+    </script>
+</body>
+</html>
