@@ -1,0 +1,38 @@
+{
+  "model_name": "RandomForest",
+  "accuracy": 0.9954545454545455,
+  "precision": 0.9956709956709957,
+  "recall": 0.9954545454545454,
+  "f1": 0.9954517027687758,
+  "feature_columns": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "trained_on": "2026-05-12T19:45:09.174738Z",
+  "dataset_rows": 2200,
+  "comparison": {
+    "DecisionTree": {
+      "accuracy": 0.9795454545454545,
+      "precision": 0.9805981896890987,
+      "recall": 0.9795454545454546,
+      "f1": 0.9794231513743707
+    },
+    "KNN": {
+      "accuracy": 0.9772727272727273,
+      "precision": 0.9784742499227502,
+      "recall": 0.9772727272727273,
+      "f1": 0.9772312611223558
+    },
+    "RandomForest": {
+      "accuracy": 0.9954545454545455,
+      "precision": 0.9956709956709957,
+      "recall": 0.9954545454545454,
+      "f1": 0.9954517027687758
+    }
+  }
+}
