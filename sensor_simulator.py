@@ -7,7 +7,7 @@ from datetime import datetime
 API_URL = "http://localhost:5000/api/sensor_update"
 
 
-DEVICES = ["S_001", "S_0002", "S_004", "S_005"]
+DEVICES = ["S_001", "S_002","S_003" ]
 
 def generate_random_sensor_data(device_id):
 

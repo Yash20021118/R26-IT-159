@@ -6,6 +6,8 @@ import os
 load_dotenv()
 mongo = PyMongo()
 
+
+
 def create_app():
     app = Flask(__name__, template_folder='views', static_folder='../static')
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
