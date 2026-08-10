@@ -1165,3 +1165,21 @@ def get_soil_info(soil_type):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@api_bp.route('/zone_info/<zone_code>', methods=['GET'])
+def get_zone_info(zone_code):
+    if 'user_id' not in session:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    try:
+        zone_info = mongo.db.SL_Agro_Ecological_Zones.find_one({"Zone_Code": zone_code})
+
+        if not zone_info:
+            return jsonify({"status": "error", "message": "Zone details not found"}), 404
+
+        zone_info['_id'] = str(zone_info['_id'])
+        return jsonify({"status": "success", "data": zone_info})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
