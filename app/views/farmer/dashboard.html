@@ -356,10 +356,10 @@
 
                     <!-- PREDICTIVE CHART SECTION (Shortened height) -->
                     <div class="card-header" style="border-top: 1.5px solid #e2e8f0; padding-top: 8px; border-bottom: none; margin-bottom: 2px;">
-                        <h3>📉 3-Day Moisture vs Temp Forecast</h3>
+                        <h3>📉 Moisture vs Temp Forecast (5-Day)</h3>
                     </div>
                     <div style="position: relative; flex-grow: 1; min-height: 120px;">
-                        <canvas id="forecastChart"></canvas>
+                        <canvas id="predictionChart"></canvas>
                     </div>
                 </div>
 
@@ -397,7 +397,8 @@
                         <!-- Soil Image Tag (Shortened to 110px) -->
                         <div style="margin:0; flex-grow: 1; display: flex; align-items: center;">
                             <img id="soil_image" src="/static/images/soils/default.jpg" alt="Soil Image" 
-                                style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px; border: 1.5px solid #d8b4fe;"
+                                onclick="openSoilDetailsModal()"
+                                style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px; border: 1.5px solid #d8b4fe; cursor: pointer;"
                                 onerror="this.src='/static/images/soils/default.jpg';">
                         </div>
 
@@ -459,6 +460,8 @@
             <div class="section-title" style="margin-bottom: 20px;">
                 <span>🧠 AI Predictive Soil Analytics & Weather (Next 5 Days)</span>
             </div>
+
+            <div id="predictionStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
 
             <!-- ROW 1: First 3 Charts -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
@@ -568,6 +571,20 @@
 
         <!-- TAB 4: ANALYSIS -->
         <div class="tab-page" id="tab-analysis">
+            <!-- Time-range filter for the charts below -->
+            <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-bottom: 12px;">
+                <label for="analyticsRange" style="font-size:13px; color:#64748b;">Time range:</label>
+                <select id="analyticsRange" onchange="fetchAnalyticsData()" style="padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0; font-size:13px;">
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d" selected>Last 7 Days (hourly avg)</option>
+                    <option value="30d">Last 30 Days (daily avg)</option>
+                    <option value="90d">Last 90 Days (daily avg)</option>
+                </select>
+            </div>
+
+            <!-- Empty/error state banner - hidden unless fetchAnalyticsData() has something to say -->
+            <div id="analysisStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+
             <!-- Top 6 Sensor Average Stat Cards -->
             <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
                 <div class="stat-card">
@@ -674,6 +691,8 @@
             <div class="section-title" style="margin-bottom: 15px;">
                 <span>📊 Sensor Overview (Live)</span>
             </div>
+
+            <div id="sensorStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
 
 
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 24px;">
@@ -789,83 +808,34 @@
     </div>
 </div>
 
+<!-- Soil Details Pop-up Modal -->
+<div id="soilDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; padding:24px; border-radius:12px; width:550px; max-width:90%; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        
+        <!-- Modal Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1.5px solid #e2e8f0; padding-bottom:10px;">
+            <h3 id="soilModalTitle" style="margin:0; color:#0f172a; font-size:18px;">Soil Details</h3>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <!-- Language Selector -->
+                <select id="soilLangSelect" onchange="changeSoilLanguage()" style="padding:6px 10px; border-radius:6px; border:1px solid #cbd5e1; font-weight:600; cursor:pointer; background:#f8fafc;">
+                    <option value="si">සිංහල</option>
+                    <option value="en">English</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+                <button onclick="closeSoilModal()" style="border:none; background:none; font-size:20px; cursor:pointer; color:#64748b;">✖</button>
+            </div>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div id="soilModalContent" style="max-height:400px; overflow-y:auto; line-height:1.6; color:#334155; font-size:14px;">
+            
+        </div>
+    </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-    // FORECAST CHART INITIALIZATION & FETCHING LOGIC
-    let forecastChartInstance = null;
-
-    function fetchForecastData() {
-        const farmSelect = document.getElementById('farmSelect');
-        if(!farmSelect || !farmSelect.value) return;
-        
-        fetch(`/api/forecast_chart/${farmSelect.value}`)
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'success') {
-                renderForecastChart(data.dates, data.temps, data.moistures);
-            }
-        })
-        .catch(err => console.error("Error fetching forecast:", err));
-    }
-
-    function renderForecastChart(labels, temps, moistures) {
-        const ctx = document.getElementById('forecastChart');
-        if (!ctx) return;
-        
-        if (forecastChartInstance) {
-            forecastChartInstance.destroy();
-        }
-        
-        forecastChartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [
-                    {
-                        label: 'Predicted Moisture (%)',
-                        data: moistures,
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        yAxisID: 'y',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 2
-                    },
-                    {
-                        label: 'Forecast Temp (°C)',
-                        data: temps,
-                        borderColor: '#f59e0b',
-                        borderDash: [5, 5],
-                        yAxisID: 'y1',
-                        fill: false,
-                        tension: 0.4,
-                        borderWidth: 2
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: { mode: 'index', intersect: false },
-                plugins: {
-                    legend: { position: 'bottom', labels: { font: { size: 10, family: "'DM Sans', sans-serif" } } }
-                },
-                scales: {
-                    x: { grid: { display: false } },
-                    y: { 
-                        type: 'linear', display: true, position: 'left', 
-                        max: 100, min: 0, 
-                        title: { display: true, text: 'Moisture (%)', font: {size: 10} } 
-                    },
-                    y1: { 
-                        type: 'linear', display: true, position: 'right', 
-                        title: { display: true, text: 'Temp (°C)', font: {size: 10} }, 
-                        grid: { drawOnChartArea: false } 
-                    }
-                }
-            }
-        });
-    }
+    
 
     // TAB SWITCHING FUNCTIONALITY
     function switchTab(tabId, titleText) {
@@ -1155,6 +1125,22 @@
     }
 
 
+    // Shared helper: show/hide the empty-state or error banner for a tab.
+    // message=null hides the banner (used on a successful load).
+    function showStateBanner(bannerId, message, isError) {
+        const el = document.getElementById(bannerId);
+        if (!el) return;
+        if (!message) {
+            el.style.display = 'none';
+            return;
+        }
+        el.textContent = message;
+        el.style.display = 'block';
+        el.style.background = isError ? '#fef2f2' : '#f8fafc';
+        el.style.color = isError ? '#b91c1c' : '#475569';
+        el.style.border = isError ? '1px solid #fecaca' : '1px solid #e2e8f0';
+    }
+
     // Global Chart Instances Store (To destroy old instances on update)
     let analysisCharts = {};
 
@@ -1162,10 +1148,15 @@
         const farmSelect = document.getElementById('farmSelect');
         if (!farmSelect || !farmSelect.value) return;
 
-        fetch(`/api/analytics_data/${farmSelect.value}`)
+        const rangeEl = document.getElementById('analyticsRange');
+        const range = rangeEl ? rangeEl.value : '7d';
+
+        fetch(`/api/analytics_data/${farmSelect.value}?range=${range}`)
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
+                    showStateBanner('analysisStateBanner', null);
+
                     // 1. Update Top Stat Cards Averages
                     const avg = data.averages;
                     document.getElementById('avg_m').innerText = avg.moisture + '%';
@@ -1177,9 +1168,16 @@
 
                     // 2. Render all 6 Charts
                     renderAnalysisCharts(data.charts);
+                } else if (data.status === 'no_data') {
+                    showStateBanner('analysisStateBanner', data.message || 'No sensor readings in this time range yet.', false);
+                } else {
+                    showStateBanner('analysisStateBanner', data.error || 'Could not load analytics data.', true);
                 }
             })
-            .catch(err => console.error("Error fetching analytics data:", err));
+            .catch(err => {
+                console.error("Error fetching analytics data:", err);
+                showStateBanner('analysisStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
     }
 
     function renderAnalysisCharts(cData) {
@@ -1331,8 +1329,14 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success') {
+                    showStateBanner('predictionStateBanner', null);
+
                     const dates = data.dates;
                     const preds = data.predictions;
+
+                    
+                    renderMoistureTempChart('predictionChart', dates, preds.moisture_temp.moistures, preds.moisture_temp.temps);
+                    // -------------------------------------------------------------
 
                     // 1. Moisture 
                     renderPredChart('predChartMoisture', 'Predicted Moisture (%)', dates, preds.moisture.data, '#3b82f6', 'rgba(59, 130, 246, 0.1)', 'line');
@@ -1346,7 +1350,7 @@
                     renderPredChart('predChartPH', 'Predicted pH Level', dates, preds.ph.data, '#10b981', 'rgba(16, 185, 129, 0.1)', 'line');
                     updateInsights('insightPH', preds.ph.insights);
 
-                    // 4. Moisture vs Temp (Dual Axis)
+                    // 4. Moisture vs Temp (Dual Axis) - Prediction Tab එක සඳහා
                     renderMoistureTempChart('predChartMoistureTemp', dates, preds.moisture_temp.moistures, preds.moisture_temp.temps);
                     updateInsights('insightMoistureTemp', preds.moisture_temp.insights);
 
@@ -1357,17 +1361,21 @@
                     // 6. Disease Risk (Area Line Chart)
                     renderPredChart('predChartDisease', 'Disease Risk (%)', dates, preds.disease.data, '#ef4444', 'rgba(239, 68, 68, 0.2)', 'line');
                     updateInsights('insightDisease', preds.disease.insights);
+                } else {
+                    showStateBanner('predictionStateBanner', data.error || data.message || 'Could not load predictions right now.', true);
                 }
             })
-            .catch(err => console.error("Error fetching soil predictions:", err));
+            .catch(err => {
+                console.error("Error fetching soil predictions:", err);
+                showStateBanner('predictionStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
     }
-
 
     let sparklineCharts = {};
 
     function renderSparkline(canvasId, dataArray, colorMain, colorGradient) {
         const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
+        if (!ctx || !dataArray || dataArray.length === 0) return;
 
         if (sparklineCharts[canvasId]) {
             sparklineCharts[canvasId].destroy();
@@ -1401,8 +1409,8 @@
                     x: { display: false }, 
                     y: { 
                         display: false, 
-                        min: Math.min(...dataArray.filter(v => v > 0)) * 0.9, 
-                        max: Math.max(...dataArray) * 1.1 
+                        min: dataArray.some(v => v > 0) ? Math.min(...dataArray.filter(v => v > 0)) * 0.9 : 0, 
+                        max: Math.max(...dataArray, 1) * 1.1 
                     }
                 },
                 layout: { padding: 0 }
@@ -1418,7 +1426,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.status === 'success' && data.history.length > 0) {
-                    
+                    showStateBanner('sensorStateBanner', null);
                     
                     const latest = data.history[0];
                     document.getElementById('sensor_val_m').innerText = latest.moisture !== '--' ? `${latest.moisture}%` : '--%';
@@ -1462,9 +1470,90 @@
                         `;
                     });
                     document.getElementById('sensor_history_table_body').innerHTML = tableHtml;
+                } else if (data.status === 'success') {
+                    showStateBanner('sensorStateBanner', 'No sensor readings recorded for this farm yet.', false);
+                } else {
+                    showStateBanner('sensorStateBanner', data.error || 'Could not load sensor history.', true);
                 }
             })
-            .catch(err => console.error("Error fetching sensor history:", err));
+            .catch(err => {
+                console.error("Error fetching sensor history:", err);
+                showStateBanner('sensorStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
+    }
+
+
+
+    let currentSoilData = null; 
+
+    function openSoilDetailsModal() {
+        let soilType = document.getElementById('soil_type').innerText;
+        
+        if(!soilType || soilType === "Analyzing..." || soilType === "No Sensor Data") {
+            alert("පස් වර්ගය හඳුනාගෙන නොමැත.");
+            return;
+        }
+
+        let formattedType = soilType.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_');
+
+        fetch(`/api/soil_info/${formattedType}`)
+        .then(res => res.json())
+        .then(resData => {
+            if(resData.status === 'success') {
+                currentSoilData = resData.data;
+                renderSoilModalContent();
+                document.getElementById('soilDetailModal').style.display = 'flex';
+            } else {
+                alert("මෙම පස් වර්ගයට අදාළ විස්තර MongoDB හි සොයාගත නොහැකි විය.");
+            }
+        })
+        .catch(err => console.error("Error fetching soil info:", err));
+    }
+
+    function renderSoilModalContent() {
+        if(!currentSoilData) return;
+        
+        let lang = document.getElementById('soilLangSelect').value;
+
+        
+        document.getElementById('soilModalTitle').innerText = currentSoilData.name[lang] || currentSoilData.name['en'];
+        
+        
+        let labels = {
+            si: { desc: "දීර්ඝ විස්තරය", crops: "සුදුසු වගාවන්", prop: "පසේ ලක්ෂණ" },
+            en: { desc: "Description", crops: "Suitable Crops", prop: "Properties" },
+            ta: { desc: "விளக்கம்", crops: "பொருத்தமான பயிர்கள்", prop: "பண்புகள்" }
+        };
+
+        let currentLabels = labels[lang] || labels['en'];
+
+        
+        let html = `
+            <div style="margin-bottom: 12px;">
+                <strong style="color: #1e293b; font-size: 15px;">📌 ${currentLabels.desc}:</strong>
+                <p style="margin-top: 4px; color: #475569;">${currentSoilData.description[lang] || currentSoilData.description['en']}</p>
+            </div>
+            
+            <div style="margin-bottom: 12px; background: #f0fdf4; padding: 10px; border-radius: 6px; border-left: 4px solid #22c55e;">
+                <strong style="color: #15803d; font-size: 14px;">🌱 ${currentLabels.crops}:</strong>
+                <p style="margin-top: 4px; color: #166534; font-weight: 500;">${currentSoilData.suitable_crops[lang] || currentSoilData.suitable_crops['en']}</p>
+            </div>
+
+            <div style="margin-bottom: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <strong style="color: #334155; font-size: 14px;">🧪 ${currentLabels.prop}:</strong>
+                <p style="margin-top: 4px; color: #475569;">${currentSoilData.properties[lang] || currentSoilData.properties['en']}</p>
+            </div>
+        `;
+
+        document.getElementById('soilModalContent').innerHTML = html;
+    }
+
+    function changeSoilLanguage() {
+        renderSoilModalContent();
+    }
+
+    function closeSoilModal() {
+        document.getElementById('soilDetailModal').style.display = 'none';
     }
 
 
@@ -1576,16 +1665,11 @@
 
     function onFarmChange() {
         fetchData();
-        fetchForecastData();
+        fetchSoilPredictions(); 
 
         const analysisTab = document.getElementById('tab-analysis');
         if (analysisTab && analysisTab.classList.contains('active')) {
             fetchAnalyticsData();
-        }
-
-        const predictionTab = document.getElementById('tab-prediction');
-        if (predictionTab && predictionTab.classList.contains('active')) {
-            fetchSoilPredictions();
         }
 
         const sensorTab = document.getElementById('tab-sensor');
@@ -1598,28 +1682,31 @@
     loadMap();
     setTimeout(() => {
         fetchData();
-        fetchForecastData();
+        fetchSoilPredictions(); 
     }, 500);
 
-    // Auto-Refresh 
+    // Auto-Refresh (farm sensor/prediction data - cheap, still worth 30s)
     setInterval(() => {
         fetchData();
-        fetchForecastData();
-        loadMap();
-        
+        fetchSoilPredictions();
+
         if (document.getElementById('tab-analysis').classList.contains('active')) {
             fetchAnalyticsData();
-        }
-        
-        if (document.getElementById('tab-prediction').classList.contains('active')) {
-            fetchSoilPredictions();
         }
 
         if (document.getElementById('tab-sensor').classList.contains('active')) {
             fetchSensorHistoryData();
         }
-    }, 30000);   
-    
+    }, 30000);
+
+    // Map refresh on its own, longer interval. /map_data is now server-side
+    // cached for 10 minutes (see MAP_DATA_TTL in api_controller.py), so
+    // polling it every 30s was just re-requesting the same cached response
+    // 19 times out of 20 - this interval matches the cache TTL instead.
+    setInterval(() => {
+        loadMap();
+    }, 600000);
+
     setTimeout(() => { map.invalidateSize(); }, 800);
 </script>
 </body>
