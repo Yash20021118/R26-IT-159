@@ -13,7 +13,7 @@
     "ph",
     "rainfall"
   ],
-  "trained_on": "2026-05-12T19:45:09.174738Z",
+  "trained_on": "2026-08-24T07:08:39.451882Z",
   "dataset_rows": 2200,
   "comparison": {
     "DecisionTree": {

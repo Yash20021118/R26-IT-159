@@ -68,9 +68,12 @@ def get_all_farm_hierarchy():
     except Exception as e:
         return jsonify({"error": str(e), "status": "failed"}), 500
 
+import os
+
 if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5050))
     print("=" * 50)
     print("SmartSeed AI Core System Started (Full Hierarchy API)")
-    print("http://localhost:5000")
+    print(f"http://localhost:{port}")
     print("=" * 50)
-    app.run(debug=True, port=5000, host='0.0.0.0')
+    app.run(debug=True, use_reloader=False, port=port, host='0.0.0.0')

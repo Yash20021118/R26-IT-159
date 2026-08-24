@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Aftercare Guidance - {{ crop_info.name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --green:#1a7a4a; --green-light:#22c55e; --green-dark:#14532d;
+    --blue-mid:#3b82f6; --purple:#5b21b6; --purple-mid:#7c3aed;
+    --amber:#b45309; --red:#b91c1c;
+    --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0;
+    --gray-300:#cbd5e1; --gray-400:#94a3b8; --gray-600:#475569; --gray-700:#334155; --gray-800:#1e293b; --gray-900:#0f172a; --white:#ffffff;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08); --shadow-md:0 4px 6px -1px rgba(0,0,0,0.1);
+    --radius:10px; --radius-lg:14px;
+    --font-main:'DM Sans',sans-serif;
+  }
+
+  body {
+    font-family: var(--font-main);
+    background: var(--gray-100);
+    color: var(--gray-800);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .header-bar {
+    background: var(--gray-900);
+    color: var(--white);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .header-bar h1 {
+    font-size: 20px;
+    color: var(--green-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-back {
+    color: var(--white);
+    text-decoration: none;
+    background: rgba(255,255,255,0.1);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .btn-back:hover {
+    background: rgba(255,255,255,0.2);
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 32px auto;
+    padding: 0 20px;
+  }
+
+  .crop-hero {
+    background: linear-gradient(135deg, #14532d 0%, #1a7a4a 100%);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-md);
+  }
+
+  .crop-hero-text h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .crop-hero-text p {
+    font-size: 14px;
+    opacity: 0.9;
+    font-style: italic;
+  }
+
+  .suitability-badge {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: var(--radius-lg);
+    padding: 16px 24px;
+    text-align: center;
+  }
+
+  .suitability-badge div {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--green-light);
+  }
+
+  .action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .btn-download {
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: background 0.2s;
+  }
+
+  .btn-download:hover {
+    background: var(--green-dark);
+  }
+
+  .guidance-section {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .guidance-section h3 {
+    font-size: 18px;
+    color: var(--gray-900);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 2px solid var(--gray-100);
+    padding-bottom: 10px;
+  }
+
+  .conditions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .condition-card {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px;
+  }
+
+  .condition-card label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gray-600);
+    text-transform: uppercase;
+  }
+
+  .condition-card div {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-top: 4px;
+  }
+
+  ul.guidance-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul.guidance-list li {
+    position: relative;
+    padding-left: 24px;
+    margin-bottom: 12px;
+    color: var(--gray-700);
+    font-size: 14px;
+  }
+
+  ul.guidance-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--green);
+    font-weight: bold;
+  }
+
+  @media print {
+    .header-bar, .btn-back, .action-bar { display: none !important; }
+    body { background: #fff; }
+    .container { max-width: 100%; margin: 0; padding: 0; }
+    .guidance-section { page-break-inside: avoid; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header-bar">
+  <h1>🌱 SmartSeed AI - Crop Aftercare Guidance</h1>
+  <a href="/seed-recommendation" class="btn-back">&larr; Back to Recommendation Engine</a>
+</div>
+
+<div class="container" id="guidanceContent">
+
+  <!-- Hero Banner -->
+  <div class="crop-hero">
+    <div class="crop-hero-text">
+      <h2>{{ crop_info.name }}</h2>
+      <p>Scientific Name: {{ crop_info.scientific_name }} | Category: {{ crop_info.category }}</p>
+      <p style="margin-top: 10px; max-width: 600px; font-style: normal; opacity: 0.95;">
+        {{ crop_info.description }}
+      </p>
+    </div>
+    <div class="suitability-badge">
+      <label style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px;">Suitability Score</label>
+      <div>{{ confidence }}%</div>
+    </div>
+  </div>
+
+  <!-- Action Bar -->
+  <div class="action-bar">
+    <span style="color: var(--gray-600);">📋 Detailed Aftercare Protocol for Sri Lankan Agricultural Conditions</span>
+    <button onclick="downloadPDF()" class="btn-download">
+      📥 Download Guidance Report (PDF / Printable)
+    </button>
+  </div>
+
+  <!-- Optimal Conditions -->
+  <div class="guidance-section">
+    <h3>🌡️ Optimal Growing Conditions</h3>
+    <div class="conditions-grid">
+      <div class="condition-card">
+        <label>Recommended Soil</label>
+        <div>{{ crop_info.optimal_conditions.soil_type }}</div>
+      </div>
+      <div class="condition-card">
+        <label>Optimal pH Range</label>
+        <div>{{ crop_info.optimal_conditions.ph_range }}</div>
+      </div>
+      <div class="condition-card">
+        <label>Temperature Range</label>
+        <div>{{ crop_info.optimal_conditions.temp_range }}</div>
+      </div>
+      <div class="condition-card">
+        <label>Humidity</label>
+        <div>{{ crop_info.optimal_conditions.humidity_range }}</div>
+      </div>
+      <div class="condition-card">
+        <label>Annual Rainfall</label>
+        <div>{{ crop_info.optimal_conditions.rainfall_range }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Land Prep -->
+  <div class="guidance-section">
+    <h3>🚜 Soil & Land Preparation</h3>
+    <ul class="guidance-list">
+      {% for item in crop_info.land_prep %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Irrigation -->
+  <div class="guidance-section">
+    <h3>💧 Irrigation & Water Management</h3>
+    <ul class="guidance-list">
+      {% for item in crop_info.irrigation %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Fertilizer -->
+  <div class="guidance-section">
+    <h3>🧪 Fertilizer & NPK Nutrition Schedule</h3>
+    <ul class="guidance-list">
+      {% for item in crop_info.fertilizer_schedule %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Pest & Disease -->
+  <div class="guidance-section">
+    <h3>🛡️ Pest & Disease Prevention</h3>
+    <ul class="guidance-list">
+      {% for item in crop_info.pest_disease_control %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Harvest -->
+  <div class="guidance-section">
+    <h3>🌾 Harvesting & Post-Harvest Care</h3>
+    <ul class="guidance-list">
+      {% for item in crop_info.harvest_post_harvest %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+</div>
+
+<script>
+function downloadPDF() {
+  window.print();
+}
+</script>
+
+</body>
+</html>

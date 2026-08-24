@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SmartSeed AI - Advanced Seed Recommendation Engine</title>
+<!-- Modern Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<!-- Chart.js for Advanced Data Visualization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- jsPDF & AutoTable for Real-Time Descriptive PDF Generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --primary: #059669;
+    --primary-dark: #047857;
+    --primary-light: #10b981;
+    --primary-soft: #ecfdf5;
+    --accent: #3b82f6;
+    --accent-dark: #1d4ed8;
+    --purple: #7c3aed;
+    --amber: #d97706;
+    --amber-soft: #fffbeb;
+    --red: #dc2626;
+    
+    --bg-dark: #0f172a;
+    --bg-card: #ffffff;
+    --bg-page: #f8fafc;
+    --border-light: #e2e8f0;
+    
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08);
+    --shadow-lg: 0 12px 24px -4px rgba(0,0,0,0.12);
+    --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
+    
+    --font-main: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-main);
+    background: var(--bg-page);
+    color: var(--text-dark);
+    font-size: 14px;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  /* Sidebar Styling */
+  .sidebar {
+    width: 260px;
+    background: var(--bg-dark);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+  }
+
+  .sidebar-header {
+    padding: 24px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 12px rgba(16,185,129,0.4);
+  }
+
+  .sidebar-header h2 {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-header span {
+    color: var(--primary-light);
+  }
+
+  .nav-list {
+    list-style: none;
+    padding: 20px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-grow: 1;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: #ffffff;
+    transform: translateX(4px);
+  }
+
+  .nav-item.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+  }
+
+  .sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: center;
+  }
+
+  /* Main Layout */
+  .main-wrapper {
+    margin-left: 260px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .topbar {
+    background: #ffffff;
+    padding: 18px 36px;
+    border-bottom: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+  }
+
+  .topbar-left h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+  }
+
+  .topbar-left p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .user-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg-page);
+    padding: 8px 16px;
+    border-radius: 30px;
+    border: 1px solid var(--border-light);
+    font-weight: 600;
+  }
+
+  .avatar-circle {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    color: #white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: white;
+  }
+
+  .container {
+    padding: 32px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 440px 1fr;
+    gap: 32px;
+  }
+
+  /* Preset Scenarios Toolbar */
+  .presets-bar {
+    grid-column: 1 / -1;
+    background: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 18px 24px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .presets-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .preset-btn {
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .preset-btn:hover {
+    background: var(--primary-soft);
+    border-color: var(--primary-light);
+    color: var(--primary-dark);
+    transform: translateY(-1px);
+  }
+
+  /* Cards & Form Styling */
+  .card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+    transition: box-shadow 0.3s;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-header {
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .farm-selector-box {
+    background: var(--primary-soft);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+
+  .farm-selector-box label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--border-light);
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-dark);
+    background: #ffffff;
+    transition: all 0.2s;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  }
+
+  .param-group {
+    background: var(--bg-page);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }
+
+  .param-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .param-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .param-value-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .param-input {
+    width: 80px;
+    text-align: right;
+    padding: 6px 10px;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+  }
+
+  .unit-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+    width: 40px;
+  }
+
+  .range-slider {
+    width: 100%;
+    height: 6px;
+    accent-color: var(--primary);
+    background: #cbd5e1;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    box-shadow: 0 6px 20px rgba(5, 150, 105, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .btn-fetch {
+    background: #ffffff;
+    border: 1px solid var(--primary-light);
+    color: var(--primary-dark);
+    padding: 9px 14px;
+    font-size: 13px;
+    border-radius: var(--radius-md);
+    margin-top: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .btn-fetch:hover {
+    background: var(--primary-soft);
+  }
+
+  /* Hero Result Banner */
+  .hero-banner {
+    background: linear-gradient(135deg, #064e3b 0%, #047857 60%, #059669 100%);
+    color: #ffffff;
+    padding: 32px;
+    border-radius: var(--radius-xl);
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-banner::after {
+    content: '🌱';
+    position: absolute;
+    right: -20px;
+    bottom: -30px;
+    font-size: 160px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .hero-banner h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .hero-banner p {
+    font-size: 14px;
+    opacity: 0.9;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+
+  /* Recommendation Cards */
+  .recommendations-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .rec-card-top {
+    background: #ffffff;
+    border: 2px solid var(--primary-light);
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .rec-card-top:hover {
+    transform: translateY(-3px);
+  }
+
+  .top-badge-ribbon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, var(--amber), #f59e0b);
+    color: white;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 6px 20px;
+    border-bottom-left-radius: 14px;
+    box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .crop-main-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-right: 110px;
+  }
+
+  .crop-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-dark);
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .suitability-score-pill {
+    background: var(--primary-soft);
+    border: 1px solid var(--primary-light);
+    color: var(--primary-dark);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-weight: 800;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .progress-bar-wrap {
+    background: #e2e8f0;
+    height: 12px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-dark));
+    border-radius: 6px;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .metric-item {
+    background: var(--bg-page);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    text-align: center;
+  }
+
+  .metric-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .metric-val {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-dark);
+  }
+
+  .rec-card-item {
+    background: #ffffff;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 180px auto;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.2s;
+  }
+
+  .rec-card-item:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  .item-crop-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .rank-tag {
+    font-size: 11px;
+    font-weight: 800;
+    background: #e2e8f0;
+    color: var(--text-dark);
+    padding: 3px 8px;
+    border-radius: 12px;
+  }
+
+  .btn-guidance {
+    background: linear-gradient(135deg, var(--purple), #6d28d9);
+    color: white;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+  }
+
+  .btn-guidance:hover {
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .btn-export {
+    background: #ffffff;
+    border: 1.5px solid var(--border-light);
+    color: var(--text-dark);
+    padding: 10px 20px;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+  }
+
+  .btn-export:hover {
+    background: var(--bg-page);
+    border-color: var(--text-muted);
+  }
+
+  /* Charts Section */
+  .chart-card {
+    background: #ffffff;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 28px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
+  }
+
+  /* Smart Agronomy Insights Box */
+  .insights-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 24px;
+  }
+
+  .insights-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1e40af;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .insights-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .insights-list li {
+    font-size: 13px;
+    color: #1e3a8a;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+
+  /* Responsiveness */
+  @media (max-width: 1024px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar { width: 70px; }
+    .sidebar-header h2, .sidebar-header span, .nav-item span { display: none; }
+    .main-wrapper { margin-left: 70px; }
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .rec-card-item { grid-template-columns: 1fr; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar Navigation -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="brand-logo">🌱</div>
+    <h2>SmartSeed <span>AI</span></h2>
+  </div>
+  <ul class="nav-list">
+    <li><a href="/dashboard" class="nav-item"><span>📊</span> <span>Farm Dashboard</span></a></li>
+    <li><a href="/seed-recommendation" class="nav-item active"><span>🌱</span> <span>Seed Recommendation</span></a></li>
+    <li><a href="/logout" class="nav-item"><span>🚪</span> <span>Logout</span></a></li>
+  </ul>
+  <div class="sidebar-footer">
+    SmartSeed AI Core v2.5<br/>Sri Lanka AgTech
+  </div>
+</div>
+
+<div class="main-wrapper">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1>Seed Suitability Recommendation Engine</h1>
+      <p>Multi-parameter machine learning model for crop selection & agronomy optimization</p>
+    </div>
+    <div class="user-badge">
+      <div class="avatar-circle">{{ user_name[0] | upper if user_name else 'F' }}</div>
+      <span>{{ user_name }}</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Presets Toolbar -->
+    <div class="presets-bar">
+      <div class="presets-title">⚡ Eco-Zone Presets:</div>
+      <button type="button" class="preset-btn" onclick="applyPreset('maha')">🌾 Maha Season Paddy</button>
+      <button type="button" class="preset-btn" onclick="applyPreset('maize')">🌽 Dry Zone Maize</button>
+      <button type="button" class="preset-btn" onclick="applyPreset('veg')">🥔 Upcountry Vegetables</button>
+      <button type="button" class="preset-btn" onclick="applyPreset('coconut')">🥥 Coconut Triangle</button>
+      <button type="button" class="preset-btn" onclick="applyPreset('fruit')">🍉 Lowland Fruits</button>
+    </div>
+
+    <!-- Left Column: Input Controls -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">⚙️ Soil & Climate Input</h3>
+      </div>
+
+      {% if farms %}
+      <div class="farm-selector-box">
+        <label>📡 Registered Farm Integration</label>
+        <select id="farmSelect" class="form-control" onchange="autoFillFarmData()">
+          <option value="">-- Select Farm to Auto-Fill Live Sensor Data --</option>
+          {% for farm in farms %}
+          <option value="{{ farm._id }}" {% if selected_farm_id == farm._id %}selected{% endif %}>
+            {{ farm.farm_name }} ({{ farm.location.district }})
+          </option>
+          {% endfor %}
+        </select>
+        <button type="button" class="btn-fetch" onclick="autoFillFarmData()">
+          🔄 Sync Live IoT Sensor Readings
+        </button>
+      </div>
+      {% endif %}
+
+      <form id="recForm" onsubmit="submitRecommendation(event)">
+        <!-- Nitrogen -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">🧪 Nitrogen (N)</span>
+            <div class="param-value-wrap">
+              <input type="number" step="any" id="inputN" class="form-control param-input" value="90" oninput="syncSlider('N')" required />
+              <span class="unit-tag">mg/kg</span>
+            </div>
+          </div>
+          <input type="range" id="sliderN" class="range-slider" min="0" max="250" value="90" oninput="syncInput('N')">
+        </div>
+
+        <!-- Phosphorus -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">🧪 Phosphorus (P)</span>
+            <div class="param-value-wrap">
+              <input type="number" step="any" id="inputP" class="form-control param-input" value="42" oninput="syncSlider('P')" required />
+              <span class="unit-tag">mg/kg</span>
+            </div>
+          </div>
+          <input type="range" id="sliderP" class="range-slider" min="0" max="150" value="42" oninput="syncInput('P')">
+        </div>
+
+        <!-- Potassium -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">🧪 Potassium (K)</span>
+            <div class="param-value-wrap">
+              <input type="number" step="any" id="inputK" class="form-control param-input" value="43" oninput="syncSlider('K')" required />
+              <span class="unit-tag">mg/kg</span>
+            </div>
+          </div>
+          <input type="range" id="sliderK" class="range-slider" min="0" max="250" value="43" oninput="syncInput('K')">
+        </div>
+
+        <!-- pH Level -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">⚖️ Soil pH Level</span>
+            <div class="param-value-wrap">
+              <input type="number" step="0.1" id="inputPh" class="form-control param-input" value="6.5" oninput="syncSlider('Ph')" required />
+              <span class="unit-tag">pH</span>
+            </div>
+          </div>
+          <input type="range" id="sliderPh" class="range-slider" min="3.5" max="9.5" step="0.1" value="6.5" oninput="syncInput('Ph')">
+        </div>
+
+        <!-- Temperature -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">🌡️ Temperature</span>
+            <div class="param-value-wrap">
+              <input type="number" step="0.1" id="inputTemp" class="form-control param-input" value="25.0" oninput="syncSlider('Temp')" required />
+              <span class="unit-tag">°C</span>
+            </div>
+          </div>
+          <input type="range" id="sliderTemp" class="range-slider" min="10" max="45" step="0.5" value="25.0" oninput="syncInput('Temp')">
+        </div>
+
+        <!-- Humidity -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">💧 Relative Humidity</span>
+            <div class="param-value-wrap">
+              <input type="number" step="0.1" id="inputHumidity" class="form-control param-input" value="80.0" oninput="syncSlider('Humidity')" required />
+              <span class="unit-tag">%</span>
+            </div>
+          </div>
+          <input type="range" id="sliderHumidity" class="range-slider" min="20" max="100" step="1" value="80.0" oninput="syncInput('Humidity')">
+        </div>
+
+        <!-- Annual Rainfall -->
+        <div class="param-group">
+          <div class="param-header">
+            <span class="param-label">🌧️ Annual Rainfall</span>
+            <div class="param-value-wrap">
+              <input type="number" step="any" id="inputRainfall" class="form-control param-input" value="200.0" oninput="syncSlider('Rainfall')" required />
+              <span class="unit-tag">mm</span>
+            </div>
+          </div>
+          <input type="range" id="sliderRainfall" class="range-slider" min="20" max="400" step="5" value="200.0" oninput="syncInput('Rainfall')">
+        </div>
+
+        <div style="background:var(--primary-soft); border:1px solid var(--primary-light); color:var(--primary-dark); padding:12px 16px; border-radius:var(--radius-md); font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px;">
+          <span style="display:inline-block; width:8px; height:8px; background:#10b981; border-radius:50%; box-shadow:0 0 8px #10b981;"></span>
+          Live AI Prediction — Auto-Calculates on Input Change
+        </div>
+      </form>
+    </div>
+
+    <!-- Right Column: Results & Interactive Visualizations -->
+    <div>
+      <!-- Banner -->
+      <div class="hero-banner">
+        <h2>AI Seed Recommendation Engine</h2>
+        <p>Our machine learning model evaluates your exact soil chemical composition (NPK, pH) and microclimate conditions against historical Sri Lankan crop trial datasets to predict optimal yields.</p>
+      </div>
+
+      <div id="resultsWrapper">
+        <div class="card" style="text-align: center; padding: 60px 20px;">
+          <div style="font-size: 48px; margin-bottom: 12px;">🌱</div>
+          <h3 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Calculating Real-Time Model...</h3>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let comparisonChart = null;
+let updateTimeout = null;
+
+function triggerLiveRecommendation() {
+  if (updateTimeout) clearTimeout(updateTimeout);
+  updateTimeout = setTimeout(() => {
+    submitRecommendation(new Event('submit'));
+  }, 150);
+}
+
+// Synchronize inputs & sliders
+function syncSlider(key) {
+  const input = document.getElementById('input' + key);
+  const slider = document.getElementById('slider' + key);
+  if (input && slider) slider.value = input.value;
+  triggerLiveRecommendation();
+}
+
+function syncInput(key) {
+  const input = document.getElementById('input' + key);
+  const slider = document.getElementById('slider' + key);
+  if (input && slider) input.value = slider.value;
+  triggerLiveRecommendation();
+}
+
+  const slider = document.getElementById('slider' + key);
+  if (input && slider) input.value = slider.value;
+}
+
+// Preset Scenarios
+const PRESETS = {
+  maha: { N: 90, P: 42, K: 43, ph: 6.5, temp: 25.0, humidity: 82.0, rainfall: 220.0 },
+  maize: { N: 110, P: 50, K: 40, ph: 6.8, temp: 31.0, humidity: 65.0, rainfall: 120.0 },
+  veg: { N: 140, P: 60, K: 150, ph: 5.8, temp: 18.0, humidity: 85.0, rainfall: 250.0 },
+  coconut: { N: 80, P: 35, K: 120, ph: 6.2, temp: 28.0, humidity: 75.0, rainfall: 180.0 },
+  fruit: { N: 70, P: 45, K: 60, ph: 6.4, temp: 32.0, humidity: 60.0, rainfall: 90.0 }
+};
+
+function applyPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  
+  document.getElementById('inputN').value = p.N; syncSlider('N');
+  document.getElementById('inputP').value = p.P; syncSlider('P');
+  document.getElementById('inputK').value = p.K; syncSlider('K');
+  document.getElementById('inputPh').value = p.ph; syncSlider('Ph');
+  document.getElementById('inputTemp').value = p.temp; syncSlider('Temp');
+  document.getElementById('inputHumidity').value = p.humidity; syncSlider('Humidity');
+  document.getElementById('inputRainfall').value = p.rainfall; syncSlider('Rainfall');
+
+  // Trigger submission automatically
+  document.getElementById('recForm').requestSubmit();
+}
+
+async function autoFillFarmData() {
+  const farmSelect = document.getElementById('farmSelect');
+  if (!farmSelect || !farmSelect.value) return;
+  const farmId = farmSelect.value;
+
+  try {
+    const res = await fetch(`/api/farm_data/${farmId}`);
+    const data = await res.json();
+    if (data.status === 'success' && data.sensor_data) {
+      const s = data.sensor_data;
+      if (s.nitrogen !== '--' && s.nitrogen !== undefined) { document.getElementById('inputN').value = s.nitrogen; syncSlider('N'); }
+      if (s.phosphorus !== '--' && s.phosphorus !== undefined) { document.getElementById('inputP').value = s.phosphorus; syncSlider('P'); }
+      if (s.potassium !== '--' && s.potassium !== undefined) { document.getElementById('inputK').value = s.potassium; syncSlider('K'); }
+      if (s.ph_level !== '--' && s.ph_level !== undefined) { document.getElementById('inputPh').value = s.ph_level; syncSlider('Ph'); }
+      if (s.temperature !== '--' && s.temperature !== undefined) { document.getElementById('inputTemp').value = s.temperature; syncSlider('Temp'); }
+      
+      document.getElementById('recForm').requestSubmit();
+    }
+  } catch (err) {
+    console.error('Error fetching farm data:', err);
+  }
+}
+
+async function submitRecommendation(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Processing AI Model...';
+
+  const payload = {
+    N: parseFloat(document.getElementById('inputN').value),
+    P: parseFloat(document.getElementById('inputP').value),
+    K: parseFloat(document.getElementById('inputK').value),
+    ph: parseFloat(document.getElementById('inputPh').value),
+    temperature: parseFloat(document.getElementById('inputTemp').value),
+    humidity: parseFloat(document.getElementById('inputHumidity').value),
+    rainfall: parseFloat(document.getElementById('inputRainfall').value)
+  };
+
+  try {
+    const res = await fetch('/api/recommend_seeds', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+
+    if (data.status === 'success' && data.recommendations && data.recommendations.length > 0) {
+      renderResults(data.recommendations, payload);
+    } else {
+      document.getElementById('resultsWrapper').innerHTML = `
+        <div class="card" style="color:var(--red); text-align:center; padding:30px;">
+          ❌ Error calculating crop suitability: ${data.message || 'No recommendations generated.'}
+        </div>`;
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('resultsWrapper').innerHTML = `
+      <div class="card" style="color:var(--red); text-align:center; padding:30px;">
+        ❌ API connection error. Please verify backend server status.
+      </div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨ Generate Crop Suitability AI Model';
+  }
+}
+
+let currentRecs = null;
+let currentInputs = null;
+
+function exportDescriptivePDF() {
+  if (!currentRecs || currentRecs.length === 0) {
+    alert("Please calculate crop recommendations first.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const topRec = currentRecs[0];
+  const farmSelect = document.getElementById('farmSelect');
+  const farmText = farmSelect && farmSelect.options[farmSelect.selectedIndex] ? farmSelect.options[farmSelect.selectedIndex].text : "Registered Farm";
+
+  // Header Banner
+  doc.setFillColor(5, 150, 105);
+  doc.rect(0, 0, 210, 30, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(15);
+  doc.text("SMARTSEED AI — CROP SUITABILITY & AGRONOMY REPORT", 14, 19);
+
+  // Metadata Line
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const reportId = "RPT-" + Math.floor(100000 + Math.random() * 900000);
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(100, 116, 139);
+  doc.text(`Date & Time: ${dateStr}`, 14, 38);
+  doc.text(`Farm / Location: ${farmText}`, 85, 38);
+  doc.text(`Report ID: ${reportId}`, 160, 38);
+
+  doc.setDrawColor(226, 232, 240);
+  doc.line(14, 42, 196, 42);
+
+  // Top Recommendation Card Box
+  doc.setFillColor(240, 253, 244);
+  doc.setDrawColor(16, 185, 129);
+  doc.roundedRect(14, 47, 182, 34, 3, 3, 'FD');
+
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text(`PRIMARY OPTIMAL CROP MATCH: ${topRec.crop.toUpperCase()}`, 20, 57);
+
+  doc.setFontSize(11.5);
+  doc.setTextColor(5, 150, 105);
+  doc.text(`Suitability Score: ${topRec.confidence}%`, 20, 66);
+
+  doc.setFontSize(9);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(71, 85, 105);
+  doc.text(`Yield Potential: High (95%+)   |   Water Demand: ${currentInputs.rainfall > 150 ? 'Rainfed' : 'Irrigated'}   |   Market Value: Premium`, 20, 74);
+
+  // 1. Tested Parameters Table
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("1. Measured Soil & Microclimate Parameters", 14, 90);
+
+  doc.autoTable({
+    startY: 94,
+    head: [['Parameter', 'Measured Value', 'Unit', 'Agronomic Band Status']],
+    body: [
+      ['Nitrogen (N)', currentInputs.N, 'mg/kg', currentInputs.N < 60 ? 'Low Deficit' : (currentInputs.N > 140 ? 'High Surplus' : 'Optimal')],
+      ['Phosphorus (P)', currentInputs.P, 'mg/kg', currentInputs.P < 30 ? 'Low' : 'Optimal'],
+      ['Potassium (K)', currentInputs.K, 'mg/kg', currentInputs.K < 40 ? 'Low' : 'Optimal'],
+      ['Soil pH Level', currentInputs.ph, 'pH', currentInputs.ph < 5.8 ? 'Acidic' : (currentInputs.ph > 7.2 ? 'Alkaline' : 'Optimal Neutral')],
+      ['Temperature', currentInputs.temperature, '°C', currentInputs.temperature > 32 ? 'High Heat' : 'Ideal Thermal'],
+      ['Relative Humidity', currentInputs.humidity, '%', 'Normal'],
+      ['Annual Rainfall', currentInputs.rainfall, 'mm', currentInputs.rainfall < 100 ? 'Dry Season' : 'Sufficient']
+    ],
+    theme: 'grid',
+    headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [248, 250, 252] },
+    styles: { fontSize: 8.5, cellPadding: 2.5 }
+  });
+
+  let currentY = doc.lastAutoTable.finalY + 10;
+
+  // 2. Ranked Crop Table
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("2. Multi-Crop Ranked Suitability Analysis", 14, currentY);
+
+  const recRows = currentRecs.map((r, idx) => [
+    `Rank #${idx + 1}`,
+    r.crop.toUpperCase(),
+    `${r.confidence}%`,
+    idx === 0 ? 'Optimal Primary Match' : 'Secondary Candidate',
+    idx === 0 ? 'Recommended for Immediate Sowing' : 'Alternative Crop Option'
+  ]);
+
+  doc.autoTable({
+    startY: currentY + 4,
+    head: [['Rank', 'Crop Name', 'Suitability Score', 'Compatibility', 'Agronomic Action']],
+    body: recRows,
+    theme: 'grid',
+    headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255], fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [240, 253, 244] },
+    styles: { fontSize: 8.5, cellPadding: 2.5 }
+  });
+
+  currentY = doc.lastAutoTable.finalY + 10;
+
+  // 3. Agronomy Insights
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(15, 23, 42);
+  doc.text("3. Actionable Agronomy Insights & Soil Management Tips", 14, currentY);
+
+  const rawInsights = generateAgronomyInsights(currentInputs, topRec);
+  let insightY = currentY + 6;
+
+  doc.setFontSize(8.5);
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(30, 58, 138);
+
+  rawInsights.forEach(tip => {
+    const cleanTip = tip.replace(/<[^>]*>?/gm, '');
+    const lines = doc.splitTextToSize(`• ${cleanTip}`, 180);
+    doc.text(lines, 14, insightY);
+    insightY += (lines.length * 4) + 2;
+  });
+
+  // Footer Signature
+  doc.setDrawColor(226, 232, 240);
+  doc.line(14, 280, 196, 280);
+  doc.setFontSize(8);
+  doc.setTextColor(148, 163, 184);
+  doc.text("Official Real-Time PDF Report generated by SmartSeed AI Decision Support Engine — Sri Lanka AgTech", 14, 285);
+
+  const fileName = `SmartSeed_Report_${topRec.crop}_${now.toISOString().slice(0,10)}.pdf`;
+  doc.save(fileName);
+}
+
+function renderResults(recs, inputs) {
+  currentRecs = recs;
+  currentInputs = inputs;
+  const container = document.getElementById('resultsWrapper');
+  const topRec = recs[0];
+  const otherRecs = recs.slice(1);
+
+  // Generate Insights based on inputs
+  const insights = generateAgronomyInsights(inputs, topRec);
+
+  let html = `
+    <!-- Action Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <h3 style="font-size:18px; font-weight:800;">🎯 Model Prediction Results</h3>
+      <button class="btn-export" onclick="exportDescriptivePDF()">📄 Export Descriptive PDF Summary</button>
+    </div>
+
+
+    <div class="recommendations-wrapper">
+      <!-- #1 Top Match Card -->
+      <div class="rec-card-top">
+        <div class="top-badge-ribbon">🥇 #1 Optimal Match</div>
+        
+        <div class="crop-main-info">
+          <div>
+            <div class="crop-name">${getCropEmoji(topRec.crop)} ${topRec.crop}</div>
+            <div style="color:var(--text-muted); font-size:13px; font-weight:600; margin-top:4px;">
+              Highest compatibility score based on soil & microclimate vectors
+            </div>
+          </div>
+          <div class="suitability-score-pill">
+            <span>${topRec.confidence}%</span>
+            <span style="font-size:12px; font-weight:600; opacity:0.8;">Suitable</span>
+          </div>
+        </div>
+
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width: ${topRec.confidence}%;"></div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-label">Yield Potential</div>
+            <div class="metric-val" style="color:var(--primary-dark)">High (95%+)</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Soil Match</div>
+            <div class="metric-val">Optimal</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Water Demand</div>
+            <div class="metric-val">${inputs.rainfall > 150 ? 'Rainfed' : 'Irrigated'}</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-label">Market Value</div>
+            <div class="metric-val" style="color:var(--purple)">Premium</div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end;">
+          <a href="/guidance/${encodeURIComponent(topRec.crop)}?confidence=${topRec.confidence}" class="btn-guidance">
+            📖 View Comprehensive Agronomy & Aftercare Guidance &rarr;
+          </a>
+        </div>
+      </div>
+
+      <!-- Other Top Recommendations -->
+      <div class="card" style="padding:20px;">
+        <h4 style="font-size:14px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:16px;">
+          Ranked Alternative Crop Matches
+        </h4>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+  `;
+
+  otherRecs.forEach((item, idx) => {
+    const rankNum = idx + 2;
+    html += `
+      <div class="rec-card-item">
+        <div>
+          <div class="item-crop-name">
+            <span class="rank-tag">#${rankNum}</span>
+            ${getCropEmoji(item.crop)} ${item.crop}
+          </div>
+        </div>
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:700; margin-bottom:4px;">
+            <span>Suitability</span>
+            <span style="color:var(--primary)">${item.confidence}%</span>
+          </div>
+          <div class="progress-bar-wrap" style="height:8px; margin:0;">
+            <div class="progress-bar-fill" style="width: ${item.confidence}%;"></div>
+          </div>
+        </div>
+        <div>
+          <a href="/guidance/${encodeURIComponent(item.crop)}?confidence=${item.confidence}" class="btn-guidance" style="padding:8px 12px; font-size:12px;">
+            📖 View Guidance
+          </a>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart Card -->
+    <div class="chart-card">
+      <h3 style="font-size:16px; font-weight:800; margin-bottom:16px;">📊 Crop Suitability Comparison Matrix</h3>
+      <div class="chart-container">
+        <canvas id="suitabilityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Agronomy Insights -->
+    <div class="insights-box">
+      <div class="insights-title">💡 Smart Agronomy Recommendations</div>
+      <ul class="insights-list">
+        ${insights.map(tip => `<li><span>🔹</span> <span>${tip}</span></li>`).join('')}
+      </ul>
+    </div>
+  `;
+
+  container.innerHTML = html;
+
+  // Render Chart
+  renderChart(recs);
+}
+
+function getCropEmoji(crop) {
+  const c = crop.toLowerCase();
+  if (c.includes('rice') || c.includes('paddy')) return '🌾';
+  if (c.includes('maize') || c.includes('corn')) return '🌽';
+  if (c.includes('chickpea') || c.includes('gram')) return '🫘';
+  if (c.includes('coconut')) return '🥥';
+  if (c.includes('banana')) return '🍌';
+  if (c.includes('papaya')) return '🥭';
+  if (c.includes('watermelon')) return '🍉';
+  if (c.includes('cotton')) return '☁️';
+  if (c.includes('jute')) return '🌿';
+  if (c.includes('apple')) return '🍎';
+  if (c.includes('orange')) return '🍊';
+  if (c.includes('grapes')) return '🍇';
+  if (c.includes('mango')) return '🥭';
+  return '🌱';
+}
+
+function generateAgronomyInsights(inputs, topRec) {
+  const tips = [];
+  
+  if (inputs.N < 60) {
+    tips.push(`<strong>Nitrogen Deficit Notice:</strong> Current Nitrogen level (${inputs.N} mg/kg) is low. Consider applying urea top-dressing during early vegetative growth of <strong>${topRec.crop}</strong>.`);
+  } else if (inputs.N > 140) {
+    tips.push(`<strong>High Nitrogen Level:</strong> Nitrogen is rich (${inputs.N} mg/kg). Avoid excessive additional nitrogen fertilizers to prevent lush vegetative growth at the expense of fruiting.`);
+  } else {
+    tips.push(`<strong>Optimal Nitrogen Balance:</strong> Soil Nitrogen level (${inputs.N} mg/kg) matches ideal requirements for <strong>${topRec.crop}</strong>.`);
+  }
+
+  if (inputs.ph < 5.8) {
+    tips.push(`<strong>Acidic Soil Advisory:</strong> Soil pH is ${inputs.ph}. Applying agricultural lime (Dolomite / Calcium Carbonate) will improve nutrient availability for <strong>${topRec.crop}</strong>.`);
+  } else if (inputs.ph > 7.2) {
+    tips.push(`<strong>Alkaline Soil Advisory:</strong> Soil pH is ${inputs.ph}. Adding organic compost or sulfur can help lower pH to the optimal range.`);
+  } else {
+    tips.push(`<strong>Ideal Soil pH:</strong> Soil pH (${inputs.ph}) is in the optimal neutral range for high root nutrient absorption.`);
+  }
+
+  if (inputs.rainfall < 100) {
+    tips.push(`<strong>Low Rainfall Warning:</strong> Expected annual rainfall (${inputs.rainfall} mm) is low. Ensure secondary drip or furrow irrigation systems are established.`);
+  } else if (inputs.rainfall > 250) {
+    tips.push(`<strong>High Rainfall Note:</strong> Adequate rainfall expected. Ensure field drainage channels are cleared to prevent root rot or waterlogging.`);
+  }
+
+  return tips;
+}
+
+function renderChart(recs) {
+  const ctx = document.getElementById('suitabilityChart');
+  if (!ctx) return;
+
+  if (comparisonChart) {
+    comparisonChart.destroy();
+  }
+
+  const labels = recs.map(r => r.crop.toUpperCase());
+  const dataScores = recs.map(r => r.confidence);
+
+  comparisonChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Suitability Confidence (%)',
+        data: dataScores,
+        backgroundColor: [
+          '#059669',
+          '#3b82f6',
+          '#7c3aed',
+          '#d97706',
+          '#64748b'
+        ],
+        borderRadius: 8,
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return ` Suitability Score: ${context.parsed.y}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: function(value) { return value + '%'; }
+          },
+          grid: { color: '#f1f5f9' }
+        },
+        x: {
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// Automatically trigger recommendation on page load
+window.addEventListener('DOMContentLoaded', () => {
+  const farmSelect = document.getElementById('farmSelect');
+  if (farmSelect && farmSelect.value) {
+    autoFillFarmData();
+  } else {
+    submitRecommendation(new Event('submit'));
+  }
+});
+
+</script>
+
+</body>
+</html>

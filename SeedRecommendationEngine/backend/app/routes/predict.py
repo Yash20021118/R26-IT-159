@@ -25,3 +25,18 @@ def recommend(payload: InputFeatures) -> RecommendationResponse:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
     except Exception as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@router.get("/guidance/{crop_name}")
+def get_guidance(crop_name: str):
+    import sys
+    from pathlib import Path
+    ROOT = Path(__file__).resolve().parents[3]
+    if str(ROOT) not in sys.path:
+        sys.path.append(str(ROOT))
+    try:
+        from app.utils.crop_guidance import get_crop_guidance
+        return get_crop_guidance(crop_name)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+

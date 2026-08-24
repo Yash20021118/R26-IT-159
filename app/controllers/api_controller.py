@@ -1183,3 +1183,112 @@ def get_zone_info(zone_code):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+# ---------------------------------------------------------------------------
+# Seed Recommendation & Guidance Endpoints
+# ---------------------------------------------------------------------------
+@api_bp.route('/recommend_seeds', methods=['POST', 'GET'])
+def recommend_seeds():
+    try:
+        if request.method == 'POST':
+            data = request.json or {}
+        else:
+            data = request.args.to_dict()
+
+        farm_id = data.get('farm_id')
+        if farm_id:
+            farm = Farm.get_farm_by_id(farm_id)
+            if farm and 'sensors' in farm:
+                device_id = farm['sensors'].get('device_id')
+                latest_reading = mongo.db.sensor_readings.find_one(
+                    {"device_id": device_id},
+                    sort=[("timestamp", -1)]
+                )
+                if latest_reading:
+                    data.setdefault('N', latest_reading.get('nitrogen', 90))
+                    data.setdefault('P', latest_reading.get('phosphorus', 42))
+                    data.setdefault('K', latest_reading.get('potassium', 43))
+                    data.setdefault('ph', latest_reading.get('ph_level', 6.5))
+                    data.setdefault('temperature', latest_reading.get('temperature', 25.0))
+                    data.setdefault('humidity', latest_reading.get('humidity', 80.0))
+                    data.setdefault('rainfall', latest_reading.get('rainfall', 200.0))
+
+        # Default fallback values if any missing
+        N = float(data.get('N', 90))
+        P = float(data.get('P', 42))
+        K = float(data.get('K', 43))
+        temperature = float(data.get('temperature', 25.0))
+        humidity = float(data.get('humidity', 80.0))
+        ph = float(data.get('ph', 6.5))
+        rainfall = float(data.get('rainfall', 200.0))
+
+        # Load trained crop model
+        model_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+            'SeedRecommendationEngine', 'backend', 'trained_models', 'crop_model.pkl'
+        )
+
+        if not os.path.exists(model_path):
+            # Fallback if trained_models path is different
+            model_path = os.path.join(
+                os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                'models', 'crop_model.pkl'
+            )
+
+        if not os.path.exists(model_path):
+            return jsonify({
+                "status": "error",
+                "message": "Crop recommendation model not trained yet. Please run train_model.py."
+            }), 404
+
+        import joblib
+        import numpy as np
+
+        model = joblib.load(model_path)
+        feature_order = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
+        features = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
+
+        probabilities = model.predict_proba(features)[0]
+        classes = model.classes_
+
+        ranked = sorted(zip(classes, probabilities), key=lambda x: x[1], reverse=True)
+        recommendations = []
+        for crop, prob in ranked[:5]:
+            percentage = round(float(prob) * 100, 1)
+            recommendations.append({
+                "crop": str(crop),
+                "confidence": percentage,
+                "suitability_percentage": percentage
+            })
+
+        best_crop = recommendations[0]["crop"] if recommendations else "rice"
+
+        return jsonify({
+            "status": "success",
+            "input_params": {
+                "N": N, "P": P, "K": K,
+                "temperature": temperature, "humidity": humidity,
+                "ph": ph, "rainfall": rainfall
+            },
+            "best_crop": best_crop,
+            "best_confidence": recommendations[0]["confidence"] if recommendations else 0.0,
+            "recommendations": recommendations
+        })
+
+    except Exception as e:
+        print(f"Seed Recommendation API Error: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+@api_bp.route('/crop_guidance/<crop_name>', methods=['GET'])
+def get_crop_guidance_api(crop_name):
+    try:
+        from app.utils.crop_guidance import get_crop_guidance
+        guidance = get_crop_guidance(crop_name)
+        return jsonify({
+            "status": "success",
+            "guidance": guidance
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
