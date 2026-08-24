@@ -1,0 +1,226 @@
+﻿# Soil Classification & Region Identification
+
+ <IT22183736 RANASINGHE H A V N>
+https://github.com/Yash20021118/R26-IT-159/tree/Soil-Classification-%26-Region-Identification#soil-classification--region-identification
+
+# Soil Classification, Region Identification and Risk Intelligence System
+
+## Project Overview
+
+The **Soil Classification, Region Identification and Risk Intelligence System** is a Smart Agriculture Decision Support component designed for Sri Lankan soil intelligence. It classifies soil types using soil nutrient, climate, moisture, altitude, and agro-ecological zone data, supports region-aware interpretation, and provides a foundation for risk-based agricultural decision-making.
+
+This phase delivers a machine learning workflow, live sensor simulation, Flask backend startup scripts, MongoDB integration, and model training notebook for research progress demonstrations and future smart farming advisory development.
+
+## Research Objectives (Phase 1)
+
+- Prepare and analyze Sri Lankan soil data for machine learning.
+- Encode agro-ecological zones and soil classes for model training.
+- Train and compare baseline ML models for soil classification.
+- Select the best-performing soil classification model based on accuracy and classification metrics.
+- Persist trained model artifacts for backend integration and live prediction.
+- Simulate IoT-style soil sensor readings for real-time backend testing.
+- Store and manage backend data using MongoDB.
+- Provide a foundation for region identification and risk intelligence logic.
+
+## Architecture
+
+Data Layer:Sri Lankan soil dataset ingestion from `dataset/SL_Soil_Data.csv`.
+Preprocessing Layer:Label encoding, numeric feature scaling, train-test splitting, and feature preparation.
+Model Layer: Random Forest and Decision Tree model training, comparison, evaluation, and persistence.
+Region Intelligence Layer:Agro-ecological zone encoding using Dry, Dry/Wet, Intermediate, and Wet zones.
+Risk Intelligence Layer:Foundation for interpreting soil, climate, nutrient, rainfall, and moisture conditions as agricultural risk signals.
+Sensor Layer:Simulated sensor data generation for soil moisture, pH, temperature, and NPK values.
+API Layer: Flask backend application with MongoDB support and sensor update endpoint integration.
+Database Layer:MongoDB storage for application data and admin user management.
+
+
+### Important Live Prediction Rule
+
+The model is trained on normalized numeric values. For live predictions, raw sensor data must be passed through the saved scaler before calling the model.
+
+Skipping normalization can produce incorrect predictions.
+
+## Models
+
+The project trains and compares the following machine learning models:
+
+- Random Forest Classifier
+- Decision Tree Classifier
+
+
+Default backend URL:
+http://localhost:5000
+
+
+The backend is initialized using:
+python
+
+## Sensor Simulator
+
+The project includes a live sensor simulator:
+
+The simulator sends random sensor data every 10 seconds to:
+
+http://localhost:5000/api/sensor_update
+
+
+
+Create a `.env` file in the project root and define the MongoDB connection string:
+
+env
+FLASK_APP=run.py
+FLASK_ENV=development
+SECRET_KEY=smartseed_super_secret_key_2026
+MONGO_URI=mongodb://localhost:27017/smartseed_db
+WEATHER_API_KEY=742525c07af818d6e1ff8797804e45f5
+
+
+## Notebook Training Workflow
+
+Open and run the notebook:
+soil_model_training.ipynb
+
+
+The notebook workflow includes:
+
+1. Import required libraries.
+2. Load `dataset/SL_Soil_Data.csv`.
+3. Encode agro-ecological zone and soil type labels.
+4. Normalize numeric features using `MinMaxScaler`.
+5. Split the dataset into training and testing sets.
+6. Train Random Forest and Decision Tree models.
+7. Select the best model.
+8. Generate classification metrics.
+9. Display feature importance.
+10. Save trained model artifacts.
+11. Test live prediction examples.
+
+Requirements
+
+The project uses the following main dependencies:
+
+Flask
+Flask-PyMongo
+python-dotenv
+pymongo
+bcrypt
+requests
+pandas
+numpy
+scikit-learn
+joblib
+
+
+## Folder Structure
+
+Current project files:
+
+SoilRiskIntelligence/
+│
+├── run.py
+├── create_admin.py
+├── sensor_simulator.py
+├── soil_model_training.ipynb
+├── requirements.txt
+├── .env
+├── .gitignore
+└── README.md
+
+Expected runtime and training folders:
+
+SoilRiskIntelligence/
+│
+├── app/
+│   └── Flask backend application package
+│
+├── dataset/
+│   └── SL_Soil_Data.csv
+│
+├── models/
+│   ├── soil_model.pkl
+│   ├── scaler.pkl
+│   ├── label_encoder_zone.pkl
+│   └── label_encoder_soil.pkl
+│
+├── reports/
+│   └── evaluation outputs and visualizations
+│
+├── notebooks/
+│   └── optional notebook backups or experiments
+│
+└── docs/
+    └── screenshots/
+
+
+## Research Contribution
+
+- Establishes a high-performing machine learning baseline for Sri Lankan soil classification.
+- Uses agro-ecological zones as a regional intelligence feature.
+- Demonstrates how raw sensor data can be transformed into live soil classification outputs.
+- Provides confidence-based Top-3 prediction results for interpretability.
+- Identifies the strongest soil and nutrient features influencing classification.
+- Supports future agricultural risk intelligence using soil, region, climate, and nutrient indicators.
+- Provides backend and simulator components for real-time smart agriculture demonstrations.
+
+## Limitations (Phase 1)
+
+- Region identification is currently based on agro-ecological zone rather than exact GIS coordinates.
+- Risk intelligence is foundational and requires formal rule design or additional model training.
+- Current backend endpoints are only partially visible from the uploaded files.
+- The model depends on the availability and quality of `SL_Soil_Data.csv`.
+- Sensor simulator generates random values and does not represent physical IoT hardware readings.
+- No satellite imagery, GIS maps, or remote sensing layers are included in this phase.
+- No crop recommendation logic is included in this module.
+
+## Next Phase Plans
+
+- Add district-level and province-level region identification.
+- Integrate GIS coordinates and agro-ecological zone maps.
+- Convert soil classification confidence into structured risk levels.
+- Add expert rules for pH, rainfall, moisture, and NPK risk interpretation.
+- Connect real IoT soil sensors instead of simulated sensor values.
+- Add dashboards for soil trends, risk alerts, and region-wise soil distribution.
+- Add SHAP or feature-level explanations for model predictions.
+- Extend the model to support crop suitability and fertilizer advisory recommendations.
+- Add farmer-friendly multilingual recommendations.
+
+## Screenshots
+
+Placeholder paths for future documentation:
+
+`
+docs/screenshots/dashboard-overview.png
+docs/screenshots/soil-classification-output.png
+docs/screenshots/region-identification-output.png
+docs/screenshots/risk-intelligence-dashboard.png
+
+## How to Run the Complete Demo
+
+1. Install dependencies.
+
+pip install -r requirements.txt
+
+2. Configure `.env` with MongoDB connection string.
+
+env
+MONGO_URI=your_mongodb_connection_string
+
+3. Train the soil model using the notebook.
+soiL_model_training.ipynb
+
+
+4. Start the Flask backend.
+python run.py
+
+
+5. Run the sensor simulator in a second terminal.
+python sensor_simulator.py
+
+
+6. Verify sensor data is being sent to the backend endpoint.
+http://localhost:5000/api/sensor_update
+
+
+## Project Status
+
+This project is currently in **Phase 1** and focuses on soil classification, agro-ecological zone based region intelligence, backend integration, and live sensor simulation. The next phase should formalize risk scoring, expand regional mapping, and connect the model output to practical agricultural advisory recommendations.

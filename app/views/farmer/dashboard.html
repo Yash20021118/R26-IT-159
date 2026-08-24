@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SmartSeed Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --green:#1a7a4a; --green-light:#22c55e; --green-dark:#14532d;
+    --blue-mid:#3b82f6; --purple:#5b21b6; --purple-mid:#7c3aed;
+    --amber:#b45309; --amber-mid:#f59e0b; --red:#b91c1c; --red-pale:#fee2e2;
+    --gray-50:#f8fafc; --gray-100:#f1f5f9; --gray-200:#e2e8f0;
+    --gray-400:#94a3b8; --gray-600:#475569; --gray-700:#334155; --gray-800:#1e293b; --gray-900:#0f172a; --white:#ffffff;
+    --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+    --radius-sm:6px; --radius:10px; --radius-lg:14px;
+    --font-main:'DM Sans',sans-serif;
+  }
+  
+  body {
+      font-family:var(--font-main);
+      background:var(--gray-100);
+      color:var(--gray-800);
+      font-size:14px;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+  }
+
+  /* Custom Scrollbar for Inner Content */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  /* SIDEBAR NAVIGATION */
+  .sidebar {
+      width: 240px;
+      background: var(--gray-900);
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 30;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  }
+
+  .sidebar-header {
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+  }
+
+  .sidebar-header h2 {
+      margin: 0;
+      color: var(--green-light);
+      font-size: 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+  }
+
+  .nav-list {
+      list-style: none;
+      padding: 18px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-grow: 1;
+  }
+
+  .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--gray-400);
+      text-decoration: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.2s ease;
+  }
+
+  .nav-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+  }
+
+  .nav-item.active {
+      background: var(--green);
+      color: var(--white);
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(26, 122, 74, 0.35);
+  }
+
+  .nav-item .icon {
+      font-size: 18px;
+  }
+
+  .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: var(--gray-400);
+      text-align: center;
+  }
+
+  /* MAIN WRAPPER */
+  .main-wrapper {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      min-width: 0;
+      overflow: hidden;
+  }
+
+  /* Top Header */
+  .header { 
+      background: white; 
+      padding: 12px 30px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05); 
+      flex-shrink: 0; 
+      z-index: 10; 
+  }
+  
+  .current-tab-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gray-800);
+  }
+
+  .user-info { display: flex; align-items: center; gap: 16px; }
+  .user-info span { font-weight: 600; color: #475569; }
+  .logout { color: #ef4444; text-decoration: none; font-weight: bold; border: 1.5px solid #fca5a5; padding: 6px 15px; border-radius: 6px; transition: 0.3s;}
+  .logout:hover { background: #fee2e2; }
+
+  /* Navbar Farm Dropdown Styling */
+  .farm-select-nav {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: #1e293b;
+      outline: none;
+      background: #f8fafc;
+      cursor: pointer;
+      min-width: 220px;
+      transition: all 0.2s ease;
+  }
+
+  .farm-select-nav:hover {
+      border-color: #94a3b8;
+      background: #ffffff;
+  }
+
+  /* Weather Pill CSS */
+  .weather-pill { display:flex; align-items:center; gap:7px; background:#fef3c7; border:1px solid #fed7aa; border-radius:var(--radius-sm); padding:6px 12px; font-weight:600; color:var(--amber); font-size: 13px;}
+
+  /* TAB CONTENT VIEWS CONTAINER */
+  .content-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+  }
+
+  .tab-page {
+      display: none;
+      height: 100%;
+      flex-direction: column;
+  }
+
+  .tab-page.active {
+      display: flex;
+  }
+
+  /* DASHBOARD 3-COLUMN GRID CONTAINER (Equal Heights) */
+  .grid-container { 
+      display: grid; 
+      grid-template-columns: repeat(3, 1fr); 
+      gap: 20px; 
+      max-width: 1600px; 
+      margin: 0 auto; 
+      flex-grow: 1; 
+      min-height: 0; 
+      width: 100%; 
+      align-items: stretch;
+  }
+  
+  /* CARDS */
+  .card { 
+      background: white; 
+      border-radius: 12px; 
+      padding: 20px; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03); 
+      display: flex; 
+      flex-direction: column; 
+      height: 100%; 
+      overflow: hidden;
+  }
+
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 10px; flex-shrink: 0; }
+  .card-header h3 { margin: 0; font-size: 15px; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+  
+  /* Floating Legend */
+  .map-legend { position: absolute; bottom: 12px; left: 12px; z-index: 1000; background: rgba(255, 255, 255, 0.95); padding: 8px 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .map-legend h4 { margin: 0 0 6px 0; font-size: 12px; color: #1e293b; }
+
+  /* Sensor Grid (Increased vertical space to make Sensor section taller) */
+  .sensor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; flex-shrink: 0; }
+  .sensor-box { background: #f8fafc; padding: 30px 16px; border-radius: 10px; text-align: center; border: 1px solid #e2e8f0; }
+  .sensor-title { font-size: 14px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .sensor-val { font-size: 24px; font-weight: 700; }
+  
+  .box-moisture { border-top: 4px solid #3b82f6; }
+  .val-moisture { color: #2563eb; }
+  .box-temp { border-top: 4px solid #f59e0b; }
+  .val-temp { color: #d97706; }
+  .box-ph { border-top: 4px solid #10b981; }
+  .val-ph { color: #059669; }
+  .box-npk { border-top: 4px solid #475569; }
+  .val-npk { color: #334155; }
+
+  /* AI Box (Shortened to balance Column 2) */
+  .soil-ai-box { background: #f3e8ff; padding: 20px; border-radius: 10px; text-align: center; border: 1.5px solid #e9d5ff; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+  .soil-ai-title { font-weight: 700; color: #7e22ce; font-size: 11px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
+  .soil-type { font-size: 24px; font-weight: 700; color: #6d28d9;}
+  .soil-conf { color: #8b5cf6; font-size: 12px; font-weight: 500;}
+
+  /* Alerts Container (Column 3) */
+  #alerts_container { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+
+  path.leaflet-interactive:focus { outline: none !important; }
+
+  /* UI FOR ADDITIONAL TABS */
+  .section-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 20px; }
+  .section-title { font-size: 16px; font-weight: 700; color: var(--gray-900); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+  .badge-danger { background: #fee2e2; color: #b91c1c; }
+  .badge-warning { background: #fef3c7; color: #b45309; }
+  .badge-success { background: #dcfce7; color: #15803d; }
+  
+  .custom-table { width: 100%; border-collapse: collapse; text-align: left; }
+  .custom-table th, .custom-table td { padding: 12px 16px; border-bottom: 1px solid var(--gray-200); }
+  .custom-table th { background: var(--gray-50); color: var(--gray-600); font-weight: 700; font-size: 12px; text-transform: uppercase; }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label { display: block; font-weight: 600; margin-bottom: 6px; color: var(--gray-700); }
+  .form-control { width: 100%; padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--gray-200); font-family: inherit; font-size: 14px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: 0.2s; }
+  .btn-primary { background: var(--green); color: white; }
+  .btn-primary:hover { background: var(--green-dark); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 24px; }
+  .stat-card { background: white; border-radius: 10px; padding: 18px; border: 1px solid var(--gray-200); }
+  .stat-card-title { font-size: 12px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; }
+  .stat-card-value { font-size: 26px; font-weight: 700; color: var(--gray-800); margin: 6px 0; }
+  .stat-card-sub { font-size: 12px; color: var(--green); font-weight: 600; }
+
+  .chart-placeholder { width: 100%; height: 220px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; gap: 8px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR NAVIGATION -->
+<div class="sidebar">
+    <div class="sidebar-header">
+        <h2>🌱 SmartSeed</h2>
+    </div>
+    <ul class="nav-list">
+        <li class="nav-item active" data-tab="tab-dashboard" onclick="switchTab('tab-dashboard', 'Dashboard Dashboard')">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+        </li>
+        <li class="nav-item" data-tab="tab-alerts" onclick="switchTab('tab-alerts', 'Alert Center & Warnings')">
+            <span class="icon">🔔</span>
+            <span>Alerts</span>
+        </li>
+        <li class="nav-item" data-tab="tab-prediction" onclick="switchTab('tab-prediction', 'AI Soil & Crop Predictions')">
+            <span class="icon">🧠</span>
+            <span>Prediction</span>
+        </li>
+        <li class="nav-item" data-tab="tab-analysis" onclick="switchTab('tab-analysis', 'Soil Trend Analysis & Analytics')">
+            <span class="icon">📈</span>
+            <span>Analysis</span>
+        </li>
+
+        <li class="nav-item" data-tab="tab-sensor" onclick="switchTab('tab-sensor', 'Live Sensor Data & History')">
+            <span class="icon">🎛️</span>
+            <span>Sensor</span>
+        </li>
+    </ul>
+    <div class="sidebar-footer">
+        SmartSeed AI v2.4 <br>Agri-Intelligence System
+    </div>
+</div>
+
+<!-- MAIN CONTENT WRAPPER -->
+<div class="main-wrapper">
+    <!-- TOP HEADER -->
+    <div class="header">
+        <div class="current-tab-title" id="tabTitleHeader">Dashboard</div>
+        <div class="user-info">
+            <!-- Farm Dropdown in Header Navbar -->
+            <select id="farmSelect" class="farm-select-nav" onchange="onFarmChange()">
+                {% for farm in farms %}
+                    <option value="{{ farm._id }}">{{ farm.farm_name }} ({{ farm.location.district }})</option>
+                {% endfor %}
+            </select>
+            
+            <div class="weather-pill" id="weatherWidget">☀️ --°C | Loading...</div>
+            <span>👤 {{ user_name }}</span>
+            <a href="/logout" class="logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- CONTENT BODY (MULTI-TAB VIEWS) -->
+    <div class="content-container">
+
+        <!-- TAB 1: DASHBOARD (3 EQUAL COLUMNS LAYOUT) -->
+        <div class="tab-page active" id="tab-dashboard">
+            <div class="grid-container">
+                
+                <!-- COLUMN 1: WEATHER MAP & FORECAST CHART -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📍 Real-Time Weather & Forecast</h3>
+                    </div>
+                    
+                    <!-- MAP SECTION (Lengthened to 310px) -->
+                    <div style="position: relative; height: 400px; flex-shrink: 0; margin-bottom: 12px;">
+                        <div class="map-legend" style="padding: 4px 8px;">
+                            <h4 style="margin-bottom: 3px;">Live Map</h4>
+                            <div style="display: flex; align-items: center; font-size: 10px; margin-bottom: 2px;"><span style="display: inline-block; width: 8px; height: 8px; background: #3b82f6; border-radius: 2px; margin-right: 4px;"></span> Rainy</div>
+                            <div style="display: flex; align-items: center; font-size: 10px; margin-bottom: 2px;"><span style="display: inline-block; width: 8px; height: 8px; background: #eab308; border-radius: 2px; margin-right: 4px;"></span> Hot</div>
+                            <div style="display: flex; align-items: center; font-size: 10px;"><span style="display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 2px; margin-right: 4px;"></span> Normal</div>
+                        </div>
+                        <div id="map" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; border-radius: 8px; border: 1px solid #e2e8f0; z-index: 1;"></div>
+                    </div>
+
+                    <!-- PREDICTIVE CHART SECTION (Shortened height) -->
+                    <div class="card-header" style="border-top: 1.5px solid #e2e8f0; padding-top: 8px; border-bottom: none; margin-bottom: 2px;">
+                        <h3>📉 Moisture vs Temp Forecast (5-Day)</h3>
+                    </div>
+                    <div style="position: relative; flex-grow: 1; min-height: 120px;">
+                        <canvas id="predictionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- COLUMN 2: SENSOR DATA & AI -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📡 Sensor Data & AI</h3>
+                    </div>
+                    
+                    <!-- SENSOR GRID (Lengthened Vertically) -->
+                    <div class="sensor-grid">
+                        <div class="sensor-box box-moisture">
+                            <div class="sensor-title">MOISTURE</div>
+                            <div class="sensor-val val-moisture" id="sm">--</div>
+                        </div>
+                        <div class="sensor-box box-temp">
+                            <div class="sensor-title">TEMP</div>
+                            <div class="sensor-val val-temp" id="temp">--</div>
+                        </div>
+                        <div class="sensor-box box-ph">
+                            <div class="sensor-title">pH LEVEL</div>
+                            <div class="sensor-val val-ph" id="ph">--</div>
+                        </div>
+                        <div class="sensor-box box-npk">
+                            <div class="sensor-title">NPK</div>
+                            <div class="sensor-val val-npk" id="npk" style="font-size: 18px; margin-top:3px;">-- / -- / --</div>
+                        </div>
+                    </div>
+
+                    <!-- SOIL AI CLASSIFICATION (Shortened Image & Box) -->
+                    <div class="soil-ai-box">
+                        <div class="soil-ai-title">🧠 AI CLASSIFICATION</div>
+                        <div class="soil-type" id="soil_type">Analyzing...</div>
+                        
+                        <!-- Soil Image Tag (Shortened to 110px) -->
+                        <div style="margin:0; flex-grow: 1; display: flex; align-items: center;">
+                            <img id="soil_image" src="/static/images/soils/default.jpg" alt="Soil Image" 
+                                onclick="openSoilDetailsModal()"
+                                style="width: 100%; height: 300px; object-fit: cover; border-radius: 8px; border: 1.5px solid #d8b4fe; cursor: pointer;"
+                                onerror="this.src='/static/images/soils/default.jpg';">
+                        </div>
+
+                        <div style="font-size: 12px; color: #475569; margin-bottom: 2px; font-weight: bold;">
+                            Zone: <span id="agro_zone_display" 
+                                        style="color: #059669; cursor: pointer; text-decoration: underline; padding: 2px 4px; border-radius: 4px; background: #ecfdf5; transition: 0.2s;" 
+                                        onmouseover="this.style.background='#d1fae5'" 
+                                        onmouseout="this.style.background='#ecfdf5'" 
+                                        onclick="openZoneDetailsModal()">--</span>
+                        </div>
+                        
+                        <div class="soil-conf" id="soil_conf">--% Confidence</div>
+                    </div>
+                </div>
+
+                <!-- COLUMN 3: ALERTS & INSIGHTS (Equal Height Bottom Alignment) -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔔 Insights & Advice</h3>
+                    </div>
+                    <div id="alerts_container">
+                        <div style="padding: 15px; background: #f8fafc; border-radius: 8px; font-size: 13px; color: #64748b; text-align: center;">
+                            Analyzing soil conditions...
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 2: ALERTS -->
+        <div class="tab-page" id="tab-alerts">
+            <div class="section-card">
+                <div class="section-title">
+                    <span>🚨 Alert & Notification Logs</span>
+                </div>
+                <p style="color: #64748b; margin-bottom: 20px;">History of real-time automated warnings and crop health triggers.</p>
+                
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Severity</th>
+                            <th>Factor</th>
+                            <th>Description & Values</th>
+                            <th>Recommended Action</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="alerts_table_body">
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 20px; color: #64748b;">Loading alerts...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!-- TAB 3: PREDICTION -->
+        <div class="tab-page" id="tab-prediction">
+            <div class="section-title" style="margin-bottom: 20px;">
+                <span>🧠 AI Predictive Soil Analytics & Weather (Next 5 Days)</span>
+            </div>
+
+            <div id="predictionStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+
+            <!-- ROW 1: First 3 Charts -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                
+                <!-- Chart 1: Moisture Depletion -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">💧 Soil Moisture Depletion</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartMoisture"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightMoisture" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Nitrogen Leaching -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">🌿 Nitrogen (N) Leaching Risk</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartNitrogen"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightNitrogen" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chart 3: pH Shift -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">🧪 Soil pH Shift & Acidity</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartPH"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightPH" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ROW 2: New 3 Charts (Moisture vs Temp, Rainfall, Disease Risk) -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+                
+                <!-- Chart 4: Moisture vs Temp Forecast -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">📉 Moisture vs Temp Forecast</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartMoistureTemp"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightMoistureTemp" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chart 5: Rainfall Prediction -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">🌧️ Predicted Rainfall (mm)</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartRainfall"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightRainfall" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chart 6: Pest & Fungal Risk -->
+                <div class="section-card" style="margin-bottom: 0; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <h4 style="color: #1e293b; margin-bottom: 15px; font-size: 15px;">🦠 Fungal & Disease Risk (%)</h4>
+                        <div style="height: 200px; position: relative;">
+                            <canvas id="predChartDisease"></canvas>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; min-height: 90px;">
+                        <strong style="color: #334155; font-size: 12px;">AI Insights:</strong>
+                        <ul id="insightDisease" style="padding-left: 18px; color: #475569; font-size: 12px; margin-top: 6px; line-height: 1.4;">
+                            <li>Loading AI predictions...</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 4: ANALYSIS -->
+        <div class="tab-page" id="tab-analysis">
+            <!-- Time-range filter for the charts below -->
+            <div style="display:flex; justify-content:flex-end; align-items:center; gap:10px; margin-bottom: 12px;">
+                <label for="analyticsRange" style="font-size:13px; color:#64748b;">Time range:</label>
+                <select id="analyticsRange" onchange="fetchAnalyticsData()" style="padding:6px 10px; border-radius:6px; border:1px solid #e2e8f0; font-size:13px;">
+                    <option value="24h">Last 24 Hours</option>
+                    <option value="7d" selected>Last 7 Days (hourly avg)</option>
+                    <option value="30d">Last 30 Days (daily avg)</option>
+                    <option value="90d">Last 90 Days (daily avg)</option>
+                </select>
+            </div>
+
+            <!-- Empty/error state banner - hidden unless fetchAnalyticsData() has something to say -->
+            <div id="analysisStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+
+            <!-- Top 6 Sensor Average Stat Cards -->
+            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg Moisture</div>
+                    <div class="stat-card-value" id="avg_m">--%</div>
+                    <div class="stat-card-sub" style="color:#3b82f6;">💧 Hydration</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg Temp</div>
+                    <div class="stat-card-value" id="avg_t">--°C</div>
+                    <div class="stat-card-sub" style="color:#f59e0b;">🌡️ Soil Thermal</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg pH Level</div>
+                    <div class="stat-card-value" id="avg_ph">--</div>
+                    <div class="stat-card-sub" style="color:#10b981;">🧪 Acidity/Alkaline</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg Nitrogen (N)</div>
+                    <div class="stat-card-value" id="avg_n">-- mg/kg</div>
+                    <div class="stat-card-sub" style="color:#6366f1;">🌿 Leaf Growth</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg Phosphorus (P)</div>
+                    <div class="stat-card-value" id="avg_p">-- mg/kg</div>
+                    <div class="stat-card-sub" style="color:#ec4899;">🌱 Root Dev</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Avg Potassium (K)</div>
+                    <div class="stat-card-value" id="avg_k">-- mg/kg</div>
+                    <div class="stat-card-sub" style="color:#8b5cf6;">🌾 Crop Yield</div>
+                </div>
+            </div>
+
+            <!-- 6 Analytics Charts Grid Container -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 20px; margin-top: 10px;">
+                
+                <!-- Chart 1: Moisture vs Rainfall -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>🌧️ 1. Moisture vs Rainfall Correlation</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartMoistureRain"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: NPK Target vs Actual Balance -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>⚖️ 2. N-P-K Target vs Actual Balance</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartNPKBalance"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 3: Soil Temp vs Weather Ambient Temp -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>🌡️ 3. Soil Temp vs Weather Temp</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartTempComparison"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 4: pH Stability & Optimal Zone Trend -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>🧪 4. Soil pH Stability Trend</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartPHTrend"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 5: NPK Nutrients Historical Trend -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>📉 5. NPK Nutrients Dynamic History</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartNPKHistory"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 6: Overall Soil Quality / Health Score Index -->
+                <div class="section-card" style="margin-bottom:0;">
+                    <div class="section-title">
+                        <span>🛡️ 6. Multi-Factor Soil Health Radar</span>
+                    </div>
+                    <div style="height: 250px; position: relative;">
+                        <canvas id="chartSoilHealth"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- TAB 5: SENSOR  -->
+        <div class="tab-page" id="tab-sensor">
+            
+            <div class="section-title" style="margin-bottom: 15px;">
+                <span>📊 Sensor Overview (Live)</span>
+            </div>
+
+            <div id="sensorStateBanner" style="display:none; padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:14px;"></div>
+
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 24px;">
+                
+                <!-- Moisture Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">Moisture</span>
+                        <h2 id="sensor_val_m" style="margin: 5px 0 0 0; color: #3b82f6; font-size: 24px;">--%</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartMoisture"></canvas>
+                    </div>
+                </div>
+
+                <!-- Temp Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">Temperature</span>
+                        <h2 id="sensor_val_t" style="margin: 5px 0 0 0; color: #f59e0b; font-size: 24px;">--°C</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartTemp"></canvas>
+                    </div>
+                </div>
+
+                <!-- pH Level Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">pH Level</span>
+                        <h2 id="sensor_val_ph" style="margin: 5px 0 0 0; color: #10b981; font-size: 24px;">--</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartPH"></canvas>
+                    </div>
+                </div>
+
+                <!-- Nitrogen Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">Nitrogen (N)</span>
+                        <h2 id="sensor_val_n" style="margin: 5px 0 0 0; color: #8b5cf6; font-size: 24px;">-- ppm</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartN"></canvas>
+                    </div>
+                </div>
+
+                <!-- Phosphorus Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">Phosphorus (P)</span>
+                        <h2 id="sensor_val_p" style="margin: 5px 0 0 0; color: #ec4899; font-size: 24px;">-- ppm</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartP"></canvas>
+                    </div>
+                </div>
+
+                <!-- Potassium Card -->
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; position: relative; height: 120px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="position: relative; z-index: 2;">
+                        <span style="color: #64748b; font-size: 14px; font-weight: 500;">Potassium (K)</span>
+                        <h2 id="sensor_val_k" style="margin: 5px 0 0 0; color: #0ea5e9; font-size: 24px;">-- ppm</h2>
+                    </div>
+                    <div style="position: absolute; bottom: -5px; left: -5px; right: -5px; height: 60px; padding: 0 20px;">
+                        <canvas id="chartK"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sensor History Table -->
+            <div class="section-card" style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; margin-bottom: 0;">
+                <div class="section-title" style="margin-bottom: 15px;">
+                    <span>📜 Sensor Data History Logs</span>
+                </div>
+                
+                <div style="overflow-y: auto; flex-grow: 1; max-height: 400px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <table class="custom-table" style="width: 100%; border-collapse: collapse;">
+                        <thead style="position: sticky; top: 0; background: #f8fafc; z-index: 5;">
+                            <tr>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Date & Time</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Moisture (%)</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Temp (°C)</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">pH Level</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Nitrogen (N)</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Phosphorus (P)</th>
+                                <th style="padding: 12px; border-bottom: 2px solid #cbd5e1;">Potassium (K)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sensor_history_table_body">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 20px; color: #64748b;">Loading sensor history...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Chart Modal -->
+<div id="trendModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:20px; border-radius:8px; width:600px; max-width:90%;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 id="modalTitle" style="margin:0; color:#1e293b;">Trend History</h3>
+            <button onclick="closeModal()" style="border:none; background:none; font-size:18px; cursor:pointer;">✖</button>
+        </div>
+        <canvas id="trendChart"></canvas>
+    </div>
+</div>
+
+<!-- Soil Details Pop-up Modal -->
+<div id="soilDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; padding:24px; border-radius:12px; width:550px; max-width:90%; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        
+        <!-- Modal Header -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1.5px solid #e2e8f0; padding-bottom:10px;">
+            <h3 id="soilModalTitle" style="margin:0; color:#0f172a; font-size:18px;">Soil Details</h3>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <!-- Language Selector -->
+                <select id="soilLangSelect" onchange="changeSoilLanguage()" style="padding:6px 10px; border-radius:6px; border:1px solid #cbd5e1; font-weight:600; cursor:pointer; background:#f8fafc;">
+                    <option value="si">සිංහල</option>
+                    <option value="en">English</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+                <button onclick="closeSoilModal()" style="border:none; background:none; font-size:20px; cursor:pointer; color:#64748b;">✖</button>
+            </div>
+        </div>
+
+        <!-- Modal Body Content -->
+        <div id="soilModalContent" style="max-height:400px; overflow-y:auto; line-height:1.6; color:#334155; font-size:14px;">
+            
+        </div>
+    </div>
+</div>
+
+
+<!-- Agro Zone Details Pop-up Modal -->
+<div id="zoneDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#ffffff; padding:24px; border-radius:12px; width:450px; max-width:90%; position:relative; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom:1.5px solid #e2e8f0; padding-bottom:10px;">
+            <h3 id="zoneModalTitle" style="margin:0; color:#0f172a; font-size:18px;">Agro-Ecological Zone Info</h3>
+            <button onclick="closeZoneModal()" style="border:none; background:none; font-size:20px; cursor:pointer; color:#64748b;">✖</button>
+        </div>
+
+        <div id="zoneModalContent" style="max-height:400px; overflow-y:auto; line-height:1.6; color:#334155; font-size:14px;">
+            <!-- Content will load here -->
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    
+
+    // TAB SWITCHING FUNCTIONALITY
+    function switchTab(tabId, titleText) {
+        const pages = document.querySelectorAll('.tab-page');
+        pages.forEach(page => page.classList.remove('active'));
+
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+
+        const targetPage = document.getElementById(tabId);
+        if(targetPage) {
+            targetPage.classList.add('active');
+        }
+
+        const targetNav = document.querySelector(`[data-tab="${tabId}"]`);
+        if(targetNav) {
+            targetNav.classList.add('active');
+        }
+
+        if(titleText) {
+            document.getElementById('tabTitleHeader').innerText = titleText;
+        }
+
+        if(tabId === 'tab-dashboard' && typeof map !== 'undefined' && map) {
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 200);
+        }
+    }
+
+    // MAP INITIALIZATION
+    let map = L.map('map', { zoomControl: false }).setView([7.8731, 80.7718], 7);
+    L.control.zoom({ position: 'topleft' }).addTo(map);
+    
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png').addTo(map);
+    let geojsonLayer;
+    let farmMarker;
+
+    window.addEventListener('resize', function() {
+        if(map) map.invalidateSize();
+    });
+
+    function loadMap() {
+        fetch('/api/map_data')
+        .then(res => res.json())
+        .then(apiData => {
+            fetch('/static/districts.json')
+            .then(res => res.json())
+            .then(geoData => {
+                if(geojsonLayer) map.removeLayer(geojsonLayer);
+                
+                geojsonLayer = L.geoJSON(geoData, {
+                    style: function(feature) {
+                        let rawName = feature.properties.ADM2_EN || feature.properties.name || "Unknown";
+                        let searchName = rawName.toLowerCase().trim();
+                        let matchedData = apiData.find(d => d.district.toLowerCase().trim() === searchName);
+                        let fillColor = matchedData ? matchedData.color : '#e2e8f0'; 
+                        return { fillColor: fillColor, weight: 1.5, color: '#ffffff', fillOpacity: 0.8 };
+                    },
+                    onEachFeature: function(feature, layer) {
+                        let rawName = feature.properties.ADM2_EN || feature.properties.name || "Unknown";
+                        let searchName = rawName.toLowerCase().trim();
+                        let dData = apiData.find(d => d.district.toLowerCase().trim() === searchName);
+                        let matchedName = dData ? dData.district : rawName;
+
+                        layer.bindTooltip(`<div style="font-weight:bold; font-size:13px; font-family:'DM Sans';">${matchedName}</div>`, {
+                            permanent: false, direction: "center", className: "district-tooltip"
+                        });
+                        
+                        layer.on({
+                            mouseover: function(e) { 
+                                let target = e.target;
+                                target.setStyle({ fillOpacity: 0.95, weight: 2.5, color: '#334155' });
+                                target.bringToFront();
+                                if (farmMarker) farmMarker.setZIndexOffset(1000); 
+                            },
+                            mouseout: function(e) { geojsonLayer.resetStyle(e.target); }
+                        });
+
+                        if(dData) {
+                            let popupContent = `
+                                <div style="font-family:'DM Sans'; min-width: 140px; text-align: left;">
+                                    <h4 style="margin:0; color:#1e293b; font-size: 14px;">${dData.district}</h4>
+                                    <p style="margin:2px 0 8px 0; font-size:11px; color:#64748b;">${dData.zone}</p>
+                                    <div style="margin-top:6px; padding:4px 8px; border-radius:4px; background-color:${dData.color}; color:white; font-size: 11px; font-weight:bold; text-align:center;">
+                                        ${dData.condition}
+                                    </div>
+                                    <div style="margin-top:8px; font-size:12px; color:#334155;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px;">
+                                            <span>🌡️ Temp:</span> <strong>${dData.temp} °C</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>🌧️ Rain:</span> <strong>${dData.rainfall} mm</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            layer.bindPopup(popupContent);
+                        } else {
+                            layer.bindPopup(`<div style="font-family:'DM Sans'; text-align:center; font-size:12px;"><strong>${matchedName}</strong><br>Live Data Not Available</div>`);
+                        }
+                    }
+                }).addTo(map);
+            });
+        });
+    }
+
+    function fetchData() {
+        const farmSelect = document.getElementById('farmSelect');
+        if(!farmSelect || !farmSelect.value) return;
+        
+        fetch(`/api/farm_data/${farmSelect.value}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === 'success') {
+                
+                let wDesc = data.sensor_data.weather_desc ? data.sensor_data.weather_desc.toLowerCase() : "unknown";
+                let wIcon = '🌤️'; 
+                if (wDesc.includes('clear')) wIcon = '☀️'; 
+                else if (wDesc.includes('cloud')) wIcon = '☁️'; 
+                else if (wDesc.includes('rain')) wIcon = '🌧️'; 
+
+                let displayDesc = data.sensor_data.weather_desc.replace(/\b\w/g, l => l.toUpperCase());
+                document.getElementById('weatherWidget').innerHTML = `${wIcon} ${data.sensor_data.weather_temperature}°C | ${displayDesc}`;
+
+                let sd = data.sensor_data;
+                document.getElementById('sm').innerText = sd.soil_moisture !== '--' ? sd.soil_moisture + '%' : '--';
+                document.getElementById('temp').innerText = sd.temperature !== '--' ? sd.temperature + '°C' : '--';
+                document.getElementById('ph').innerText = sd.ph_level;
+                
+                if (sd.nitrogen !== '--') {
+                    document.getElementById('npk').innerText = `${sd.nitrogen} / ${sd.phosphorus} / ${sd.potassium}`;
+                } else {
+                    document.getElementById('npk').innerText = '-- / -- / --';
+                }
+                
+                if(data.soil_prediction) {
+                    let soilType = data.soil_prediction.soil_type;
+                    document.getElementById('soil_type').innerText = soilType;
+                    document.getElementById('soil_conf').innerText = data.soil_prediction.confidence !== '--' ? data.soil_prediction.confidence + '% Confidence' : '--';
+                    document.getElementById('agro_zone_display').innerText = data.agro_zone ? data.agro_zone : '--';
+
+                    let imgElement = document.getElementById('soil_image');
+                    if (soilType && soilType !== "Analyzing..." && soilType !== "No Sensor Data" && soilType !== "No Prediction") {
+                        let imageName = soilType.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_') + '.jpg';
+                        imgElement.src = `/static/images/soils/${imageName}`;
+                    } else {
+                        imgElement.src = '/static/images/soils/default.jpg';
+                    }
+                }
+
+                if (data.soil_alerts) {
+                    let alertsHtml = "";
+                    let alertsTableHtml = ""; 
+                    
+                    if (data.soil_alerts.length > 0) {
+                        data.soil_alerts.forEach(alert => {
+
+                            let bgColor = "#f8fafc"; 
+                            let borderColor = "#e2e8f0";
+                            let icon = "✅";
+                            let titleColor = "#334155";
+                            
+
+                            let badgeClass = "badge-success";
+                            let statusColor = "#10b981"; 
+    
+                            if (alert.level.includes("Critical")) { 
+                                bgColor = "#fef2f2"; borderColor = "#fecaca"; icon = "🚨"; titleColor = "#b91c1c";
+                                badgeClass = "badge-danger"; statusColor = "#ef4444";
+                            } else if (alert.level.includes("Low") || alert.level.includes("High")) { 
+                                bgColor = "#fffbeb"; borderColor = "#fde68a"; icon = "⚠️"; titleColor = "#b45309";
+                                badgeClass = "badge-warning"; statusColor = "#f59e0b";
+                            } else if (alert.level === "Optimal") {
+                                bgColor = "#f0fdf4"; borderColor = "#bbf7d0"; icon = "🌱"; titleColor = "#15803d";
+                            }
+    
+  
+                            alertsHtml += `
+                                <div style="background: ${bgColor}; border-left: 4px solid ${borderColor}; padding: 10px 12px; border-radius: 6px; margin-bottom: 10px;">
+                                    <div style="font-weight: 700; color: ${titleColor}; margin-bottom: 3px; font-size: 12px;">
+                                        ${icon} ${alert.factor} <span style="font-weight: 500; opacity: 0.8; font-size: 11px;">(${alert.level})</span>
+                                    </div>
+                                    <div style="color: #475569; font-size: 12px; margin-bottom: 5px; font-weight: 500; line-height: 1.4;">
+                                        ${alert.message}
+                                    </div>
+                                    <div style="color: #0f172a; font-size: 11px; font-weight: 700; background: rgba(255,255,255,0.6); padding: 5px; border-radius: 4px;">
+                                        💡 Advice: ${alert.advice}
+                                    </div>
+                                </div>
+                            `;
+
+                            
+                            alertsTableHtml += `
+                                <tr onclick='openModal("${alert.factor}", ${JSON.stringify(alert.history_labels)}, ${JSON.stringify(alert.history_data)})' style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background=''">
+                                    <td style="font-size: 13px; color: #64748b;">${alert.timestamp}</td>
+                                    <td><span class="badge ${badgeClass}">${alert.level}</span></td>
+                                    <td style="font-weight: 600;">${alert.factor}</td>
+                                    <td>
+                                        ${alert.message} <br>
+                                        <span style="font-size: 12px; font-weight: bold; color: #334155;">
+                                            Current: ${alert.current_value}
+                                        </span>
+                                    </td>
+                                    <td>${alert.advice}</td>
+                                    <td><span style="color: ${statusColor}; font-weight: 600;">Active</span></td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        
+                        alertsHtml = "<div style='color:#64748b; font-size:13px; text-align:center; padding-top:10px;'>No specific insights available.</div>";
+                        alertsTableHtml = `
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 20px; color: #64748b;">✅ All soil parameters are optimal. No active alerts.</td>
+                            </tr>
+                        `;
+                    }
+
+                    
+                    document.getElementById('alerts_container').innerHTML = alertsHtml;
+                    document.getElementById('alerts_table_body').innerHTML = alertsTableHtml;
+                }
+
+                if (data.farm_details && data.farm_details.location) {
+                    const loc = data.farm_details.location;
+                    if(farmMarker) map.removeLayer(farmMarker);
+                    
+                    let redIcon = new L.Icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    });
+                    
+                    farmMarker = L.marker([loc.lat, loc.lng], {icon: redIcon, zIndexOffset: 1000}).addTo(map);
+                    farmMarker.bindPopup(`<div style="font-family:'DM Sans'; text-align:center;"><strong>${data.farm_details.farm_name}</strong><br>Selected Farm</div>`);
+                }
+            }
+        }).catch(err => console.error("Error fetching data:", err));
+    }
+
+
+    let myChart = null; 
+
+    function openModal(factor, labels, data) {
+        document.getElementById('trendModal').style.display = 'flex';
+        document.getElementById('modalTitle').innerText = `${factor} - Recent Trend`;
+
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        
+        
+        if (myChart != null) {
+            myChart.destroy();
+        }
+
+        
+        myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: factor,
+                    data: data,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4 
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+
+    function closeModal() {
+        document.getElementById('trendModal').style.display = 'none';
+    }
+
+
+    // Shared helper: show/hide the empty-state or error banner for a tab.
+    // message=null hides the banner (used on a successful load).
+    function showStateBanner(bannerId, message, isError) {
+        const el = document.getElementById(bannerId);
+        if (!el) return;
+        if (!message) {
+            el.style.display = 'none';
+            return;
+        }
+        el.textContent = message;
+        el.style.display = 'block';
+        el.style.background = isError ? '#fef2f2' : '#f8fafc';
+        el.style.color = isError ? '#b91c1c' : '#475569';
+        el.style.border = isError ? '1px solid #fecaca' : '1px solid #e2e8f0';
+    }
+
+    // Global Chart Instances Store (To destroy old instances on update)
+    let analysisCharts = {};
+
+    function fetchAnalyticsData() {
+        const farmSelect = document.getElementById('farmSelect');
+        if (!farmSelect || !farmSelect.value) return;
+
+        const rangeEl = document.getElementById('analyticsRange');
+        const range = rangeEl ? rangeEl.value : '7d';
+
+        fetch(`/api/analytics_data/${farmSelect.value}?range=${range}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showStateBanner('analysisStateBanner', null);
+
+                    // 1. Update Top Stat Cards Averages
+                    const avg = data.averages;
+                    document.getElementById('avg_m').innerText = avg.moisture + '%';
+                    document.getElementById('avg_t').innerText = avg.temp + '°C';
+                    document.getElementById('avg_ph').innerText = avg.ph;
+                    document.getElementById('avg_n').innerText = avg.nitrogen + ' mg/kg';
+                    document.getElementById('avg_p').innerText = avg.phosphorus + ' mg/kg';
+                    document.getElementById('avg_k').innerText = avg.potassium + ' mg/kg';
+
+                    // 2. Render all 6 Charts
+                    renderAnalysisCharts(data.charts);
+                } else if (data.status === 'no_data') {
+                    showStateBanner('analysisStateBanner', data.message || 'No sensor readings in this time range yet.', false);
+                } else {
+                    showStateBanner('analysisStateBanner', data.error || 'Could not load analytics data.', true);
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching analytics data:", err);
+                showStateBanner('analysisStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
+    }
+
+    function renderAnalysisCharts(cData) {
+        // Helper function to safely destroy & re-create charts
+        function createChart(canvasId, type, config) {
+            if (analysisCharts[canvasId]) {
+                analysisCharts[canvasId].destroy();
+            }
+            const ctx = document.getElementById(canvasId);
+            if (ctx) {
+                analysisCharts[canvasId] = new Chart(ctx, { type: type, ...config });
+            }
+        }
+
+        // Chart 1: Moisture vs Rainfall (Combo Line + Bar)
+        createChart('chartMoistureRain', 'bar', {
+            data: {
+                labels: cData.timestamps,
+                datasets: [
+                    {
+                        label: 'Rainfall (mm)',
+                        type: 'bar',
+                        data: cData.rain,
+                        backgroundColor: 'rgba(59, 130, 246, 0.4)',
+                        borderColor: '#3b82f6',
+                        yAxisID: 'yRain'
+                    },
+                    {
+                        label: 'Soil Moisture (%)',
+                        type: 'line',
+                        data: cData.moisture,
+                        borderColor: '#059669',
+                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'yMoisture'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    yMoisture: { type: 'linear', position: 'left', min: 0, max: 100, title: { display: true, text: 'Moisture %' } },
+                    yRain: { type: 'linear', position: 'right', min: 0, grid: { drawOnChartArea: false }, title: { display: true, text: 'Rain (mm)' } }
+                }
+            }
+        });
+
+        // Chart 2: NPK Target vs Actual Balance (Grouped Bar)
+        createChart('chartNPKBalance', 'bar', {
+            data: {
+                labels: ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)'],
+                datasets: [
+                    { label: 'Actual Level', data: cData.npk_actual, backgroundColor: '#3b82f6' },
+                    { label: 'Target Optimal', data: cData.npk_target, backgroundColor: '#e2e8f0' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, title: { display: true, text: 'mg/kg' } } }
+            }
+        });
+
+        // Chart 3: Soil Temp vs Ambient Temp (Dual Line)
+        createChart('chartTempComparison', 'line', {
+            data: {
+                labels: cData.timestamps,
+                datasets: [
+                    { label: 'Soil Temp (°C)', data: cData.soil_temp, borderColor: '#d97706', tension: 0.3 },
+                    { label: 'Weather Temp (°C)', data: cData.ambient_temp, borderColor: '#f59e0b', borderDash: [5, 5], tension: 0.3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { title: { display: true, text: 'Temperature °C' } } }
+            }
+        });
+
+        // Chart 4: pH Stability Trend
+        createChart('chartPHTrend', 'line', {
+            data: {
+                labels: cData.timestamps,
+                datasets: [
+                    {
+                        label: 'Soil pH',
+                        data: cData.ph,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                        fill: true,
+                        tension: 0.3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { min: 4, max: 9, title: { display: true, text: 'pH Level' } } }
+            }
+        });
+
+        // Chart 5: NPK Dynamic History (Multi Line)
+        createChart('chartNPKHistory', 'line', {
+            data: {
+                labels: cData.timestamps,
+                datasets: [
+                    { label: 'N', data: cData.npk_history.N, borderColor: '#6366f1', tension: 0.3 },
+                    { label: 'P', data: cData.npk_history.P, borderColor: '#ec4899', tension: 0.3 },
+                    { label: 'K', data: cData.npk_history.K, borderColor: '#8b5cf6', tension: 0.3 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { title: { display: true, text: 'Concentration (mg/kg)' } } }
+            }
+        });
+
+        // Chart 6: Soil Health Index (Radar Chart)
+        createChart('chartSoilHealth', 'radar', {
+            data: {
+                labels: ['Moisture Score', 'pH Balance', 'Nitrogen', 'Phosphorus', 'Potassium', 'Thermal Health'],
+                datasets: [{
+                    label: 'Soil Health Score Index (%)',
+                    data: cData.health_scores,
+                    backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                    borderColor: '#22c55e',
+                    pointBackgroundColor: '#15803d'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { r: { min: 0, max: 100, ticks: { stepSize: 20 } } }
+            }
+        });
+    }
+
+    // Global variables to hold prediction chart instances
+    let predCharts = {};
+
+    function fetchSoilPredictions() {
+        const farmSelect = document.getElementById('farmSelect');
+        if (!farmSelect || !farmSelect.value) return;
+
+        fetch(`/api/soil_predictions/${farmSelect.value}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showStateBanner('predictionStateBanner', null);
+
+                    const dates = data.dates;
+                    const preds = data.predictions;
+
+                    
+                    renderMoistureTempChart('predictionChart', dates, preds.moisture_temp.moistures, preds.moisture_temp.temps);
+                    // -------------------------------------------------------------
+
+                    // 1. Moisture 
+                    renderPredChart('predChartMoisture', 'Predicted Moisture (%)', dates, preds.moisture.data, '#3b82f6', 'rgba(59, 130, 246, 0.1)', 'line');
+                    updateInsights('insightMoisture', preds.moisture.insights);
+
+                    // 2. Nitrogen
+                    renderPredChart('predChartNitrogen', 'Predicted Nitrogen (mg/kg)', dates, preds.nitrogen.data, '#6366f1', 'rgba(99, 102, 241, 0.1)', 'line');
+                    updateInsights('insightNitrogen', preds.nitrogen.insights);
+
+                    // 3. pH
+                    renderPredChart('predChartPH', 'Predicted pH Level', dates, preds.ph.data, '#10b981', 'rgba(16, 185, 129, 0.1)', 'line');
+                    updateInsights('insightPH', preds.ph.insights);
+
+                    // 4. Moisture vs Temp (Dual Axis) - Prediction Tab එක සඳහා
+                    renderMoistureTempChart('predChartMoistureTemp', dates, preds.moisture_temp.moistures, preds.moisture_temp.temps);
+                    updateInsights('insightMoistureTemp', preds.moisture_temp.insights);
+
+                    // 5. Rainfall (Bar Chart)
+                    renderPredChart('predChartRainfall', 'Rainfall (mm)', dates, preds.rainfall.data, '#0ea5e9', 'rgba(14, 165, 233, 0.5)', 'bar');
+                    updateInsights('insightRainfall', preds.rainfall.insights);
+
+                    // 6. Disease Risk (Area Line Chart)
+                    renderPredChart('predChartDisease', 'Disease Risk (%)', dates, preds.disease.data, '#ef4444', 'rgba(239, 68, 68, 0.2)', 'line');
+                    updateInsights('insightDisease', preds.disease.insights);
+                } else {
+                    showStateBanner('predictionStateBanner', data.error || data.message || 'Could not load predictions right now.', true);
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching soil predictions:", err);
+                showStateBanner('predictionStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
+    }
+
+    let sparklineCharts = {};
+
+    function renderSparkline(canvasId, dataArray, colorMain, colorGradient) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx || !dataArray || dataArray.length === 0) return;
+
+        if (sparklineCharts[canvasId]) {
+            sparklineCharts[canvasId].destroy();
+        }
+
+
+        let gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 60);
+        gradient.addColorStop(0, colorGradient); 
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+
+        sparklineCharts[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dataArray.map((_, i) => i), 
+                datasets: [{
+                    data: dataArray,
+                    borderColor: colorMain,
+                    borderWidth: 2,
+                    backgroundColor: gradient,
+                    fill: true,
+                    tension: 0.4, 
+                    pointRadius: 0, 
+                    pointHoverRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: {
+                    x: { display: false }, 
+                    y: { 
+                        display: false, 
+                        min: dataArray.some(v => v > 0) ? Math.min(...dataArray.filter(v => v > 0)) * 0.9 : 0, 
+                        max: Math.max(...dataArray, 1) * 1.1 
+                    }
+                },
+                layout: { padding: 0 }
+            }
+        });
+    }
+
+    function fetchSensorHistoryData() {
+        const farmSelect = document.getElementById('farmSelect');
+        if (!farmSelect || !farmSelect.value) return;
+
+        fetch(`/api/sensor_history/${farmSelect.value}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success' && data.history.length > 0) {
+                    showStateBanner('sensorStateBanner', null);
+                    
+                    const latest = data.history[0];
+                    document.getElementById('sensor_val_m').innerText = latest.moisture !== '--' ? `${latest.moisture}%` : '--%';
+                    document.getElementById('sensor_val_t').innerText = latest.temp !== '--' ? `${latest.temp}°C` : '--°C';
+                    document.getElementById('sensor_val_ph').innerText = latest.ph !== '--' ? latest.ph : '--';
+                    document.getElementById('sensor_val_n').innerText = latest.nitrogen !== '--' ? `${latest.nitrogen} ppm` : '-- ppm';
+                    document.getElementById('sensor_val_p').innerText = latest.phosphorus !== '--' ? `${latest.phosphorus} ppm` : '-- ppm';
+                    document.getElementById('sensor_val_k').innerText = latest.potassium !== '--' ? `${latest.potassium} ppm` : '-- ppm';
+
+                    
+                    const chartData = [...data.history].reverse(); 
+                    
+                    const mData = chartData.map(d => parseFloat(d.moisture) || 0);
+                    const tData = chartData.map(d => parseFloat(d.temp) || 0);
+                    const phData = chartData.map(d => parseFloat(d.ph) || 0);
+                    const nData = chartData.map(d => parseFloat(d.nitrogen) || 0);
+                    const pData = chartData.map(d => parseFloat(d.phosphorus) || 0);
+                    const kData = chartData.map(d => parseFloat(d.potassium) || 0);
+
+                    
+                    renderSparkline('chartMoisture', mData, '#3b82f6', 'rgba(59, 130, 246, 0.4)'); // Blue
+                    renderSparkline('chartTemp', tData, '#f59e0b', 'rgba(245, 158, 11, 0.4)');    // Orange
+                    renderSparkline('chartPH', phData, '#10b981', 'rgba(16, 185, 129, 0.4)');       // Green
+                    renderSparkline('chartN', nData, '#8b5cf6', 'rgba(139, 92, 246, 0.4)');         // Purple
+                    renderSparkline('chartP', pData, '#ec4899', 'rgba(236, 72, 153, 0.4)');         // Pink
+                    renderSparkline('chartK', kData, '#0ea5e9', 'rgba(14, 165, 233, 0.4)');         // Cyan
+
+                    
+                    let tableHtml = "";
+                    data.history.forEach(row => {
+                        tableHtml += `
+                            <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+                                <td style="padding: 10px 12px; font-size: 13px; color: #475569; font-weight: 500;">${row.timestamp}</td>
+                                <td style="padding: 10px 12px; color: #3b82f6; font-weight: 600;">${row.moisture}%</td>
+                                <td style="padding: 10px 12px; color: #f59e0b; font-weight: 600;">${row.temp}°C</td>
+                                <td style="padding: 10px 12px; color: #10b981; font-weight: 600;">${row.ph}</td>
+                                <td style="padding: 10px 12px; color: #8b5cf6;">${row.nitrogen}</td>
+                                <td style="padding: 10px 12px; color: #ec4899;">${row.phosphorus}</td>
+                                <td style="padding: 10px 12px; color: #0ea5e9;">${row.potassium}</td>
+                            </tr>
+                        `;
+                    });
+                    document.getElementById('sensor_history_table_body').innerHTML = tableHtml;
+                } else if (data.status === 'success') {
+                    showStateBanner('sensorStateBanner', 'No sensor readings recorded for this farm yet.', false);
+                } else {
+                    showStateBanner('sensorStateBanner', data.error || 'Could not load sensor history.', true);
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching sensor history:", err);
+                showStateBanner('sensorStateBanner', 'Could not reach the server — check your connection and try again.', true);
+            });
+    }
+
+
+
+    let currentSoilData = null; 
+
+    function openSoilDetailsModal() {
+        let soilType = document.getElementById('soil_type').innerText;
+        
+        if(!soilType || soilType === "Analyzing..." || soilType === "No Sensor Data") {
+            alert("පස් වර්ගය හඳුනාගෙන නොමැත.");
+            return;
+        }
+
+        let formattedType = soilType.toLowerCase().trim().replace(/[^a-z0-9]+/g, '_');
+
+        fetch(`/api/soil_info/${formattedType}`)
+        .then(res => res.json())
+        .then(resData => {
+            if(resData.status === 'success') {
+                currentSoilData = resData.data;
+                renderSoilModalContent();
+                document.getElementById('soilDetailModal').style.display = 'flex';
+            } else {
+                alert("මෙම පස් වර්ගයට අදාළ විස්තර MongoDB හි සොයාගත නොහැකි විය.");
+            }
+        })
+        .catch(err => console.error("Error fetching soil info:", err));
+    }
+
+    function renderSoilModalContent() {
+        if(!currentSoilData) return;
+        
+        let lang = document.getElementById('soilLangSelect').value;
+
+        
+        document.getElementById('soilModalTitle').innerText = currentSoilData.name[lang] || currentSoilData.name['en'];
+        
+        
+        let labels = {
+            si: { desc: "දීර්ඝ විස්තරය", crops: "සුදුසු වගාවන්", prop: "පසේ ලක්ෂණ" },
+            en: { desc: "Description", crops: "Suitable Crops", prop: "Properties" },
+            ta: { desc: "விளக்கம்", crops: "பொருத்தமான பயிர்கள்", prop: "பண்புகள்" }
+        };
+
+        let currentLabels = labels[lang] || labels['en'];
+
+        
+        let html = `
+            <div style="margin-bottom: 12px;">
+                <strong style="color: #1e293b; font-size: 15px;">📌 ${currentLabels.desc}:</strong>
+                <p style="margin-top: 4px; color: #475569;">${currentSoilData.description[lang] || currentSoilData.description['en']}</p>
+            </div>
+            
+            <div style="margin-bottom: 12px; background: #f0fdf4; padding: 10px; border-radius: 6px; border-left: 4px solid #22c55e;">
+                <strong style="color: #15803d; font-size: 14px;">🌱 ${currentLabels.crops}:</strong>
+                <p style="margin-top: 4px; color: #166534; font-weight: 500;">${currentSoilData.suitable_crops[lang] || currentSoilData.suitable_crops['en']}</p>
+            </div>
+
+            <div style="margin-bottom: 12px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                <strong style="color: #334155; font-size: 14px;">🧪 ${currentLabels.prop}:</strong>
+                <p style="margin-top: 4px; color: #475569;">${currentSoilData.properties[lang] || currentSoilData.properties['en']}</p>
+            </div>
+        `;
+
+        document.getElementById('soilModalContent').innerHTML = html;
+    }
+
+    function changeSoilLanguage() {
+        renderSoilModalContent();
+    }
+
+    function closeSoilModal() {
+        document.getElementById('soilDetailModal').style.display = 'none';
+    }
+
+
+
+    // Chart Render Function 
+    function renderPredChart(canvasId, label, labels, data, borderColor, bgColor, chartType = 'line') {
+        if (predCharts[canvasId]) {
+            predCharts[canvasId].destroy();
+        }
+        
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+
+        predCharts[canvasId] = new Chart(ctx, {
+            type: chartType,
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: borderColor,
+                    backgroundColor: bgColor,
+                    fill: chartType === 'line',
+                    tension: 0.4,
+                    borderWidth: chartType === 'line' ? 2 : 1,
+                    pointBackgroundColor: borderColor
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+
+    
+    function renderMoistureTempChart(canvasId, labels, moistures, temps) {
+        if (predCharts[canvasId]) { predCharts[canvasId].destroy(); }
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+
+        predCharts[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Moisture (%)',
+                        data: moistures,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        yAxisID: 'y',
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Temp (°C)',
+                        data: temps,
+                        borderColor: '#f59e0b',
+                        borderDash: [5, 5],
+                        yAxisID: 'y1',
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    y: { type: 'linear', position: 'left', min: 0, max: 100 },
+                    y1: { type: 'linear', position: 'right', grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    }
+
+    function updateInsights(elementId, insightsArray) {
+        const ul = document.getElementById(elementId);
+        if (!ul) return;
+        
+        ul.innerHTML = "";
+        insightsArray.forEach(insight => {
+            const li = document.createElement('li');
+            li.innerText = insight;
+            li.style.marginBottom = "5px";
+            ul.appendChild(li);
+        });
+    }
+
+    // Update switchTab function to fetch analytics data when 'tab-analysis' is selected
+    const originalSwitchTab = switchTab;
+    switchTab = function(tabId, titleText) {
+        originalSwitchTab(tabId, titleText);
+        
+        if (tabId === 'tab-analysis') {
+            fetchAnalyticsData();
+        } else if (tabId === 'tab-prediction') {
+            fetchSoilPredictions();
+        }
+        if (tabId === 'tab-sensor') {
+            fetchSensorHistoryData();
+        }
+    };
+
+
+    function onFarmChange() {
+        fetchData();
+        fetchSoilPredictions(); 
+
+        const analysisTab = document.getElementById('tab-analysis');
+        if (analysisTab && analysisTab.classList.contains('active')) {
+            fetchAnalyticsData();
+        }
+
+        const sensorTab = document.getElementById('tab-sensor');
+        if (sensorTab && sensorTab.classList.contains('active')) {
+            fetchSensorHistoryData();
+        }
+    }
+
+    function openZoneDetailsModal() {
+        const zoneCode = document.getElementById('agro_zone_display').innerText;
+        
+        if (!zoneCode || zoneCode === '--' || zoneCode === 'Unknown') return;
+
+
+        document.getElementById('zoneDetailModal').style.display = 'flex';
+        document.getElementById('zoneModalTitle').innerText = `Zone: ${zoneCode}`;
+        document.getElementById('zoneModalContent').innerHTML = `<div style="text-align:center; padding:20px;">Fetching details...</div>`;
+
+
+        fetch(`/api/zone_info/${zoneCode}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const info = data.data;
+                
+
+                let htmlContent = `<table class="custom-table" style="width:100%; text-align:left; border-collapse: collapse;">`;
+                
+                if(info.Zone_Code) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">Zone Code</td><td style="padding: 8px 0;">${info.Zone_Code}</td></tr>`;
+                if(info.Climate_Zone) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">Climate Zone</td><td style="padding: 8px 0;">${info.Climate_Zone}</td></tr>`;
+                if(info.District) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">District</td><td style="padding: 8px 0;">${info.District}</td></tr>`;
+                if(info.Latitude) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">Latitude</td><td style="padding: 8px 0;">${info.Latitude}</td></tr>`;
+                if(info.Longitude) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">Longitude</td><td style="padding: 8px 0;">${info.Longitude}</td></tr>`;
+                if(info.Elevation_m) htmlContent += `<tr style="border-bottom: 1px solid #e2e8f0;"><td style="font-weight:bold; padding: 8px 0;">Elevation</td><td style="padding: 8px 0;">${info.Elevation_m} m</td></tr>`;
+                
+                htmlContent += `</table>`;
+                document.getElementById('zoneModalContent').innerHTML = htmlContent;
+            } else {
+                document.getElementById('zoneModalContent').innerHTML = `<div style="text-align:center; padding:20px; color:#b91c1c;">Details not found for this zone.</div>`;
+            }
+        })
+        .catch(err => {
+            console.error("Zone fetch error:", err);
+            document.getElementById('zoneModalContent').innerHTML = `<div style="text-align:center; padding:20px; color:#b91c1c;">An error occurred while fetching details.</div>`;
+        });
+    }
+
+    function closeZoneModal() {
+        document.getElementById('zoneDetailModal').style.display = 'none';
+    }
+
+
+    function closeZoneModal() {
+        document.getElementById('zoneDetailModal').style.display = 'none';
+    }
+
+
+    loadMap();
+    setTimeout(() => {
+        fetchData();
+        fetchSoilPredictions(); 
+    }, 500);
+
+    // Auto-Refresh (farm sensor/prediction data - cheap, still worth 30s)
+    setInterval(() => {
+        fetchData();
+        fetchSoilPredictions();
+
+        if (document.getElementById('tab-analysis').classList.contains('active')) {
+            fetchAnalyticsData();
+        }
+
+        if (document.getElementById('tab-sensor').classList.contains('active')) {
+            fetchSensorHistoryData();
+        }
+    }, 30000);
+
+    // Map refresh on its own, longer interval. /map_data is now server-side
+    // cached for 10 minutes (see MAP_DATA_TTL in api_controller.py), so
+    // polling it every 30s was just re-requesting the same cached response
+    // 19 times out of 20 - this interval matches the cache TTL instead.
+    setInterval(() => {
+        loadMap();
+    }, 600000);
+
+    setTimeout(() => { map.invalidateSize(); }, 800);
+</script>
+</body>
+</html>
