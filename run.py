@@ -7,7 +7,7 @@ app = create_app()
 @app.route('/api/get_all_farm_hierarchy', methods=['GET'])
 def get_all_farm_hierarchy():
     try:
-        # 1. 'users' collection එකෙන් සියලුම පරිශීලකයින් (Farmers) ලබාගැනීම
+
         users = list(mongo.db.users.find({}))
         
         result_data = []
@@ -15,16 +15,14 @@ def get_all_farm_hierarchy():
         for user in users:
             user_id = user.get('_id')
             
-            # 2. අදාළ User ට අයත් Farms ලබාගැනීම 
-            # (සටහන: ඔබේ farms collection එකේ user ට සම්බන්ධ field එක 'user_id' හෝ 'farmer_id' විය හැක. 
-            # පහත දැක්වෙන්නේ 'user_id' මගින් සෙවීමයි. අවශ්‍ය නම් එය වෙනස් කරන්න.)
+
             farms = list(mongo.db.farms.find({"user_id": user_id}))
             
             farms_list = []
             for farm in farms:
                 farm_id = farm.get('_id')
                 
-                # 3. අදාළ Farm එකට සම්බන්ධ සෙන්සර් වල නවතම දත්ත ලබාගැනීම (sensor_readings හරහා)
+
                 pipeline = [
                     {"$match": {"farm_id": farm_id}},
                     {"$sort": {"timestamp": -1}},
@@ -43,7 +41,7 @@ def get_all_farm_hierarchy():
                     if 'timestamp' in data: data['timestamp'] = str(data['timestamp'])
                     sensors_list.append(data)
 
-                # Farm දත්ත සැකසීම
+
                 farms_list.append({
                     "farm_id": str(farm_id),
                     "farm_name": farm.get("farm_name", farm.get("name", "Unknown Farm")),
@@ -51,7 +49,7 @@ def get_all_farm_hierarchy():
                     "sensors": sensors_list
                 })
 
-            # User / Farmer දත්ත සැකසීම
+
             result_data.append({
                 "user_id": str(user_id),
                 "username": user.get("username", user.get("name", "Unknown User")),
