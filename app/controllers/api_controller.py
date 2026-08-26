@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 from datetime import datetime, timedelta
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
-
+ 
 
 def ensure_indexes():
     mongo.db.sensor_readings.create_index([("device_id", 1), ("timestamp", -1)])
