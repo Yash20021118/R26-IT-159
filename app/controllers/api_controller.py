@@ -15,40 +15,15 @@ from datetime import datetime, timedelta
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 
-# ---------------------------------------------------------------------------
-# Helper: MongoDB indexes
-# ---------------------------------------------------------------------------
-# Nearly every route in this file filters sensor_readings by device_id and
-# sorts by timestamp. Without an index that's a full collection scan on every
-# request, which gets slow fast as the collection grows. This isn't called
-# automatically (creating indexes belongs in app startup, not per-request) -
-# call it once after mongo.init_app(app) in your app factory, e.g. in
-# app/__init__.py:
-#
-#     from app.routes.api_controller import ensure_indexes
-#     mongo.init_app(app)
-#     with app.app_context():
-#         ensure_indexes()
-#
-# create_index() is a no-op if the index already exists, so it's safe to
-# leave this call in place permanently rather than running it as a one-off.
 def ensure_indexes():
     mongo.db.sensor_readings.create_index([("device_id", 1), ("timestamp", -1)])
     mongo.db.soil_rules.create_index([("Soil Type", 1), ("Factor", 1)])
     mongo.db.SL_Agro_Ecological_Zones.create_index([("District", 1)])
 
 
-# ---------------------------------------------------------------------------
-# Helper: time-range filtering + bucketed aggregation for analytics_data
-# ---------------------------------------------------------------------------
-# Fixes two things at once: (1) the analytics endpoint used to always show
-# just "the last 20 readings" with no way to see more history, and (2) if you
-# simply widened that to "last 30 days" without aggregating, a device
-# reporting every few minutes would pack thousands of points onto the X-axis.
-# Longer ranges get bucketed into coarser time slices so the chart stays
-# readable regardless of reporting frequency.
+
 RANGE_CONFIG = {
-    "24h": {"delta": timedelta(hours=24), "bucket": None},     # raw points, no aggregation
+    "24h": {"delta": timedelta(hours=24), "bucket": None},
     "7d":  {"delta": timedelta(days=7), "bucket": "hour"},
     "30d": {"delta": timedelta(days=30), "bucket": "day"},
     "90d": {"delta": timedelta(days=90), "bucket": "day"},
@@ -91,19 +66,6 @@ def bucket_readings(readings, bucket):
     return bucketed
 
 
-# ---------------------------------------------------------------------------
-# Helper: historical weather lookup
-# ---------------------------------------------------------------------------
-# OpenWeatherMap's free /forecast endpoint only returns FUTURE data, which is
-# why the analytics/prediction charts were mixing past sensor readings with
-# future rain forecasts. True historical weather needs either:
-#   (a) OpenWeather's One Call 3.0 "timemachine" endpoint - requires a paid
-#       subscription tier, but stays on the same provider/key you already use.
-#   (b) Open-Meteo's free Archive API - no key required, ~5 day reporting lag
-#       on the most recent data, coverage/precision can be lower in some regions.
-# This uses (b) since it needs no billing/account changes. If you already have
-# a paid OpenWeather plan, swap the implementation for the timemachine call
-# (same signature) and nothing else in this file needs to change.
 def get_historical_weather(lat, lng, timestamps):
     """
     Fetch historical temperature + rainfall for a list of datetime timestamps.
@@ -151,22 +113,12 @@ def get_historical_weather(lat, lng, timestamps):
             temps.append(hourly_temp[idx])
             rains.append(hourly_rain[idx] or 0.0)
         else:
-            # No archive data yet for this hour (common for the last few days -
-            # Open-Meteo's archive has a reporting lag). Use nearest neighbours.
             temps.append(28.0)
             rains.append(0.0)
 
     return temps, rains
 
 
-# ---------------------------------------------------------------------------
-# Helper: crop-specific NPK targets
-# ---------------------------------------------------------------------------
-# ASSUMPTION: expects an optional `crop_npk_requirements` collection keyed by
-# crop name, e.g. {"crop": "Tea", "N": 120, "P": 45, "K": 180}. If that
-# collection/field doesn't exist yet in your DB, this silently falls back to
-# the same generic values that were hardcoded before - so nothing breaks, but
-# you'll want to add real per-crop rows for this to stop being a placeholder.
 DEFAULT_NPK_TARGET = {"N": 140, "P": 50, "K": 200}
 
 def get_npk_target(farm):
@@ -182,13 +134,6 @@ def get_npk_target(farm):
     return [DEFAULT_NPK_TARGET['N'], DEFAULT_NPK_TARGET['P'], DEFAULT_NPK_TARGET['K']]
 
 
-# ---------------------------------------------------------------------------
-# Helper: soil health scores grounded in the same soil_rules collection
-# already used for alerts, instead of ad hoc /60, /6.5 style magic numbers.
-# ASSUMPTION: soil_rules has rows with Condition Level == "Optimal" per
-# Factor/Soil Type. If your rule data uses a different label for the "good"
-# band (e.g. "Ideal"), update OPTIMAL_LABEL below.
-# ---------------------------------------------------------------------------
 OPTIMAL_LABEL = "Optimal"
 _HEALTH_FACTOR_MAP = {
     "moisture": "Moisture (%)",
@@ -468,24 +413,6 @@ def update_sensor_data():
     return jsonify({"message": "Data saved and predicted successfully", "prediction": prediction}), 201
 
 
-
-
-# ---------------------------------------------------------------------------
-# Helper: /map_data cache
-# ---------------------------------------------------------------------------
-# 25 districts x 1 OpenWeather call each, hit every 30s by every open
-# dashboard tab, was the single biggest way to burn through the free-tier
-# rate limit. Weather doesn't meaningfully change minute to minute, so an
-# in-process TTL cache removes almost all of that traffic: the first request
-# after the TTL expires pays for the 25 calls, every request within the TTL
-# window is served from memory.
-#
-# NOTE: this is a per-process cache (a plain dict), which is fine for a
-# single Flask process (e.g. `flask run`, one gunicorn worker). If this is
-# ever deployed behind multiple gunicorn/uwsgi workers, each worker has its
-# own copy and you'd still get up to (workers x 25) calls per TTL window -
-# at that point swap MAP_DATA_CACHE for a real Redis GET/SETEX and the
-# route logic below doesn't need to change.
 MAP_DATA_TTL = timedelta(minutes=10)
 _map_data_cache = {"data": None, "fetched_at": None}
 _map_data_lock = threading.Lock()
@@ -568,20 +495,12 @@ def _fetch_all_districts_weather():
 def map_data():
     now = datetime.utcnow()
 
-    # Fast path: serve from cache without taking the lock if it's still
-    # fresh - this is the common case (every request within the TTL window).
     cached = _map_data_cache["data"]
     fetched_at = _map_data_cache["fetched_at"]
     if cached is not None and fetched_at is not None and (now - fetched_at) < MAP_DATA_TTL:
         return jsonify(cached)
 
-    # Cache miss (or expired): only one request should actually pay for the
-    # 25 OpenWeather calls. Others that arrive while it's in flight wait for
-    # the lock and then get the result it just computed, instead of each
-    # kicking off their own 25-call fan-out.
     with _map_data_lock:
-        # Re-check inside the lock in case another request refreshed the
-        # cache while we were waiting for it.
         cached = _map_data_cache["data"]
         fetched_at = _map_data_cache["fetched_at"]
         if cached is not None and fetched_at is not None and (datetime.utcnow() - fetched_at) < MAP_DATA_TTL:
@@ -594,22 +513,6 @@ def map_data():
     return jsonify(map_result)
 
 
-
-
-# ---------------------------------------------------------------------------
-# Helper: /forecast_chart model cache
-# ---------------------------------------------------------------------------
-# The IoT device pushes a new sensor reading every few minutes (via
-# /sensor_update); the dashboard polls this endpoint every 30s. Retraining a
-# fresh LinearRegression on every poll was pure wasted CPU - the training
-# data (and therefore the fitted model) is identical between two polls
-# unless a new reading has actually landed in Mongo. So: cache the fitted
-# model per device_id, and only retrain when the timestamp of the latest
-# reading has moved on from what the cached model was trained on.
-#
-# Per-process cache, same caveat as MAP_DATA_CACHE above - fine for a single
-# worker, needs a shared store (Redis, or pickle the model into Mongo) if
-# this ever runs behind multiple gunicorn workers.
 _forecast_model_cache = {}
 _forecast_model_lock = threading.Lock()
 
@@ -690,9 +593,6 @@ def forecast_chart(farm_id):
         lat = location.get('lat')
         lng = location.get('lng')
 
-        # historical_readings[-1] (most recent reading in this 100-window)
-        # is still needed below for current_sim_moisture, so this query
-        # stays - only the model itself is cached, not the reading fetch.
         historical_readings = list(mongo.db.sensor_readings.find(
             {"device_id": device_id}
         ).sort([("timestamp", 1)]).limit(100))
@@ -794,10 +694,6 @@ def get_analytics_data(farm_id):
         avg_k = round(np.mean([r.get('potassium', 0) for r in readings if r.get('potassium') not in (None, '--')]), 1)
 
 
-        # FIX: previously this pulled FUTURE forecast data and zipped it
-        # against PAST sensor readings by index, so e.g. today's actual soil
-        # moisture got compared against next week's predicted rain. Now we
-        # fetch weather for the actual date/hour of each reading.
         reading_timestamps = [r.get('timestamp') for r in readings]
         ambient_temps, rain_data = get_historical_weather(lat, lng, reading_timestamps)
 
@@ -823,10 +719,6 @@ def get_analytics_data(farm_id):
             p_vals.append(r.get('phosphorus', 0))
             k_vals.append(r.get('potassium', 0))
 
-        # FIX: was a fixed /60, /6.5, ... formula with no relation to the
-        # farm's actual predicted soil type. Now grounded in the same
-        # soil_rules collection used for the alerts on this endpoint's sibling
-        # route, falling back to generic FAO-style ranges if no rule exists.
         latest_soil_type = readings[-1].get('predicted_soil') if readings else None
         soil_health_scores = compute_health_scores(
             {"moisture": avg_moisture, "ph": avg_ph, "nitrogen": avg_n,
@@ -834,9 +726,6 @@ def get_analytics_data(farm_id):
             latest_soil_type
         )
 
-        # FIX: was hardcoded [140, 50, 200] regardless of crop. Now looks up
-        # a per-crop target if crop_npk_requirements has a row for this farm's
-        # crop, otherwise keeps the same generic defaults as before.
         npk_target = get_npk_target(farm)
 
         return jsonify({
@@ -934,11 +823,6 @@ def get_soil_predictions(farm_id):
                     moisture_preds.append(round(max(0, min(100, pred)), 1))
         
         if not moisture_preds:
-            # FIX: was always exactly 50% regardless of the farm's actual
-            # readings. If we have ANY readings (just not >10, the threshold
-            # for a trend model), use their real average as a flat baseline
-            # instead of a made-up constant. Only fall back to 50% if there
-            # is truly zero sensor data for this device.
             known = [float(r.get('soil_moisture', 0)) for r in readings if r.get('soil_moisture') not in (None, '--')]
             baseline = round(np.mean(known), 1) if known else 50.0
             moisture_preds = [baseline] * 5
@@ -957,10 +841,6 @@ def get_soil_predictions(farm_id):
         n_insights = []
         current_n = float(readings[-1].get('nitrogen', 100)) if has_enough_data and readings[-1].get('nitrogen') != '--' else 100.0
 
-        # FIX: was a made-up formula (1.5 + rain*0.8) presented as if it came
-        # from a model. Now fits a real regression on this farm's own
-        # historical nitrogen readings against the actual historical rainfall
-        # on those dates (same historical-weather helper used in analytics).
         if has_enough_data:
             hist_temps, hist_rains = get_historical_weather(lat, lng, [r['timestamp'] for r in readings])
             X_n = [[(r['timestamp'] - base_time).days, hist_rains[i]]
@@ -975,9 +855,6 @@ def get_soil_predictions(farm_id):
                     n_preds.append(current_n)
 
         if not n_preds:
-            # Not enough historical N+rainfall pairs to fit a model yet.
-            # Documented agronomy rule-of-thumb fallback, NOT a model output -
-            # the chart/insight copy should make this distinction to the user.
             for i in range(5):
                 depletion_rate = 1.5 + (forecast_rains[i] * 0.8)
                 current_n = max(0, current_n - depletion_rate)
@@ -1044,18 +921,7 @@ def get_soil_predictions(farm_id):
             rain_insights.append(f"🟢 Good Condition: Moderate rainfall ({total_rain}mm) expected. Ideal for crop growth.")
 
         # --- PREDICTION 6: Fungal & Disease Risk ---
-        # NOTE: this was never a real candidate for supervised ML - the DB has
-        # no historical field recording actual disease/outbreak incidents, so
-        # there's no label to train against. (1.5+rain*0.8-style regression
-        # elsewhere at least fits real sensor history; this can't, yet.)
-        # Rather than keep an arbitrary formula dressed up as a prediction,
-        # this is now an explicit, documented favorability index based on
-        # standard plant-pathology heuristics: most fungal pathogens are most
-        # active with high relative humidity and temperatures roughly in the
-        # 20-30°C band, with prolonged leaf wetness (correlated with rain)
-        # compounding risk. If you start logging confirmed disease incidents
-        # per farm, that table + these same weather features is what a real
-        # classifier should be trained on later.
+
         disease_preds = []
         disease_insights = []
         for i in range(5):
@@ -1149,12 +1015,10 @@ def get_soil_info(soil_type):
         return jsonify({"error": "Unauthorized"}), 401
 
     try:
-        # පස් වර්ගයේ නම lowercase සහ formatted කර සෙවීම
         formatted_type = re.sub(r'[^a-z0-9]+', '_', soil_type.lower().strip())
         soil = mongo.db.soil_details.find_one({"soil_type_id": formatted_type})
 
         if not soil:
-            # නම කෙලින්ම match නොවන්නේ නම් regex මගින් සෙවීම
             soil = mongo.db.soil_details.find_one({"soil_type_id": {"$regex": soil_type, "$options": "i"}})
 
         if not soil:
@@ -1183,112 +1047,3 @@ def get_zone_info(zone_code):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-# ---------------------------------------------------------------------------
-# Seed Recommendation & Guidance Endpoints
-# ---------------------------------------------------------------------------
-@api_bp.route('/recommend_seeds', methods=['POST', 'GET'])
-def recommend_seeds():
-    try:
-        if request.method == 'POST':
-            data = request.json or {}
-        else:
-            data = request.args.to_dict()
-
-        farm_id = data.get('farm_id')
-        if farm_id:
-            farm = Farm.get_farm_by_id(farm_id)
-            if farm and 'sensors' in farm:
-                device_id = farm['sensors'].get('device_id')
-                latest_reading = mongo.db.sensor_readings.find_one(
-                    {"device_id": device_id},
-                    sort=[("timestamp", -1)]
-                )
-                if latest_reading:
-                    data.setdefault('N', latest_reading.get('nitrogen', 90))
-                    data.setdefault('P', latest_reading.get('phosphorus', 42))
-                    data.setdefault('K', latest_reading.get('potassium', 43))
-                    data.setdefault('ph', latest_reading.get('ph_level', 6.5))
-                    data.setdefault('temperature', latest_reading.get('temperature', 25.0))
-                    data.setdefault('humidity', latest_reading.get('humidity', 80.0))
-                    data.setdefault('rainfall', latest_reading.get('rainfall', 200.0))
-
-        # Default fallback values if any missing
-        N = float(data.get('N', 90))
-        P = float(data.get('P', 42))
-        K = float(data.get('K', 43))
-        temperature = float(data.get('temperature', 25.0))
-        humidity = float(data.get('humidity', 80.0))
-        ph = float(data.get('ph', 6.5))
-        rainfall = float(data.get('rainfall', 200.0))
-
-        # Load trained crop model
-        model_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-            'SeedRecommendationEngine', 'backend', 'trained_models', 'crop_model.pkl'
-        )
-
-        if not os.path.exists(model_path):
-            # Fallback if trained_models path is different
-            model_path = os.path.join(
-                os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-                'models', 'crop_model.pkl'
-            )
-
-        if not os.path.exists(model_path):
-            return jsonify({
-                "status": "error",
-                "message": "Crop recommendation model not trained yet. Please run train_model.py."
-            }), 404
-
-        import joblib
-        import numpy as np
-
-        model = joblib.load(model_path)
-        feature_order = ["N", "P", "K", "temperature", "humidity", "ph", "rainfall"]
-        features = np.array([[N, P, K, temperature, humidity, ph, rainfall]])
-
-        probabilities = model.predict_proba(features)[0]
-        classes = model.classes_
-
-        ranked = sorted(zip(classes, probabilities), key=lambda x: x[1], reverse=True)
-        recommendations = []
-        for crop, prob in ranked[:5]:
-            percentage = round(float(prob) * 100, 1)
-            recommendations.append({
-                "crop": str(crop),
-                "confidence": percentage,
-                "suitability_percentage": percentage
-            })
-
-        best_crop = recommendations[0]["crop"] if recommendations else "rice"
-
-        return jsonify({
-            "status": "success",
-            "input_params": {
-                "N": N, "P": P, "K": K,
-                "temperature": temperature, "humidity": humidity,
-                "ph": ph, "rainfall": rainfall
-            },
-            "best_crop": best_crop,
-            "best_confidence": recommendations[0]["confidence"] if recommendations else 0.0,
-            "recommendations": recommendations
-        })
-
-    except Exception as e:
-        print(f"Seed Recommendation API Error: {e}")
-        return jsonify({"status": "error", "message": str(e)}), 500
-
-
-@api_bp.route('/crop_guidance/<crop_name>', methods=['GET'])
-def get_crop_guidance_api(crop_name):
-    try:
-        from app.utils.crop_guidance import get_crop_guidance
-        guidance = get_crop_guidance(crop_name)
-        return jsonify({
-            "status": "success",
-            "guidance": guidance
-        })
-    except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 500
