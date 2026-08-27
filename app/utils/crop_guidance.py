@@ -221,7 +221,7 @@ CROP_GUIDANCE_DATABASE = {
         ]
     },
     "papaya": {
-        "name": "Papaya (පපඩම් / පැපොල්)",
+        "name": "Papaya (පැපොල්)",
         "scientific_name": "Carica papaya",
         "category": "Fruit Crop",
         "description": "Papaya is a fast-growing, high-value tropical fruit crop yielding continuous harvests under warm climates.",
