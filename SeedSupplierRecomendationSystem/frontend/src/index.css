@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GLOBAL */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #07131f;
+  color: white;
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #07131f;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.25);
+}
+
+/* GLASS CARD */
+
+.glass-card {
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-radius: 10px;
+  box-shadow:
+    0 10px 40px rgba(0,0,0,0.25),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(255,255,255,0.14);
+  transform: translateY(-3px);
+}
+
+/* INPUTS */
+
+.input-field {
+  width: 100%;
+  margin-top: 14px;
+  padding: 18px 22px;
+  border-radius: 18px;
+
+  background: rgba(255,255,255,0.05);
+
+  border: 1px solid rgba(255,255,255,0.08);
+
+  color: white;
+
+  outline: none;
+
+  font-size: 16px;
+
+  transition: all 0.3s ease;
+}
+
+.input-field::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+.input-field:focus {
+  border-color: #22c55e;
+
+  background: rgba(255,255,255,0.08);
+
+  box-shadow:
+    0 0 0 4px rgba(34,197,94,0.15),
+    0 10px 30px rgba(34,197,94,0.08);
+}
+
+/* SELECT */
+
+select {
+  appearance: none;
+  cursor: pointer;
+}
+
+/* BUTTONS */
+
+.primary-btn {
+  padding: 18px 34px;
+
+  border-radius: 20px;
+
+  border: none;
+
+  background: linear-gradient(
+    135deg,
+    #22c55e,
+    #16a34a
+  );
+
+  color: white;
+
+  font-weight: 700;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  margin-top: 30px;
+
+  transition: all 0.3s ease;
+
+  box-shadow:
+    0 10px 30px rgba(34,197,94,0.25);
+}
+
+.primary-btn:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 15px 35px rgba(34,197,94,0.35);
+
+  opacity: 0.96;
+}
+
+.primary-btn:active {
+  transform: scale(0.98);
+}
+
+/* SECONDARY BUTTON */
+
+.secondary-btn {
+  padding: 18px 34px;
+
+  border-radius: 20px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.04);
+
+  color: white;
+
+  font-weight: 600;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+  background: rgba(255,255,255,0.08);
+
+  transform: translateY(-3px);
+}
+
+/* TABLE */
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 14px;
+}
+
+th {
+  text-align: left;
+
+  padding: 20px;
+
+  color: #94a3b8;
+
+  font-size: 15px;
+
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+}
+
+td {
+  padding: 22px 20px;
+
+  background: rgba(255,255,255,0.04);
+
+  border-top: 1px solid rgba(255,255,255,0.04);
+
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+tr td:first-child {
+  border-left: 1px solid rgba(255,255,255,0.04);
+
+  border-top-left-radius: 18px;
+
+  border-bottom-left-radius: 18px;
+}
+
+tr td:last-child {
+  border-right: 1px solid rgba(255,255,255,0.04);
+
+  border-top-right-radius: 18px;
+
+  border-bottom-right-radius: 18px;
+}
+
+/* RANGE SLIDER */
+
+input[type="range"] {
+  width: 100%;
+  height: 8px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,0.08);
+
+  outline: none;
+
+  appearance: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+
+  width: 22px;
+  height: 22px;
+
+  border-radius: 50%;
+
+  background: #22c55e;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 15px rgba(34,197,94,0.5);
+}
+
+/* TEXT SELECTION */
+
+::selection {
+  background: rgba(34,197,94,0.3);
+  color: white;
+}
+
+/* ANIMATION */
+
+.fade-up {
+  animation: fadeUp 0.7s ease forwards;
+}
+
+@keyframes fadeUp {
+
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+}
