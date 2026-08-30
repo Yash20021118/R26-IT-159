@@ -3,12 +3,8 @@ import time
 import random
 from datetime import datetime
 
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
-port = os.getenv('PORT', '5050')
-API_URL = os.getenv('SENSOR_API_URL', f"http://localhost:{port}/api/sensor_update")
+API_URL = "http://localhost:5000/api/sensor_update"
 
 
 DEVICES = ["S_001", "S_002","S_003" ]
